@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LeJEPA: Provable and Scalable Self-Supervised Learning Without the Heuristics · Gagik Navasardyan</title>
+  <meta name="description" content="Why the isotropic Gaussian is the right target for embeddings, how SIGReg enforces it with random 1-D projections, and what is left of JEPA once every anti-collapse heuristic is removed.">
+  <meta name="theme-color" content="#FFFFFF">
+  <link rel="canonical" href="https://gagiknavasardyan.github.io/writing/lejepa/">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="LeJEPA: Provable and Scalable Self-Supervised Learning Without the Heuristics">
+  <meta property="og:description" content="Why the isotropic Gaussian is the right target for embeddings, how SIGReg enforces it with random 1-D projections, and what is left of JEPA once every anti-collapse heuristic is removed.">
+  <meta property="og:image" content="https://gagiknavasardyan.github.io/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Gagik Navasardyan · MSc in Artificial Intelligence, UB · UPC · URV, Barcelona.">
+  <meta property="og:url" content="https://gagiknavasardyan.github.io/writing/lejepa/">
+  <meta property="article:published_time" content="2026-07-06">
+  <meta property="article:author" content="Gagik Navasardyan">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+  <script src="../../theme.js"></script>
+  <script src="../../transitions.js"></script>
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../../blog.css">
+  <script src="../../blog.js" defer></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}], throwOnError:false});"></script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "LeJEPA: Provable and Scalable Self-Supervised Learning Without the Heuristics",
+    "datePublished": "2026-07-06",
+    "author": { "@type": "Person", "name": "Gagik Navasardyan" },
+    "url": "https://gagiknavasardyan.github.io/writing/lejepa/"
+  }
+  </script>
+</head>
+<body class="blog">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <nav class="nav container" aria-label="Main">
+      <a class="nav-logo" href="../../index.html" aria-label="Back to the portfolio">GN</a>
+      <ul class="nav-menu" id="nav-menu">
+        <li><a class="nav-writing active" href="../../writing/"><span class="nav-writing-dot" aria-hidden="true"></span>Blog</a></li>
+      </ul>
+      <div class="nav-actions">
+          <button class="theme-toggle" type="button" aria-pressed="false" aria-label="Switch to dark theme" title="Toggle theme">
+            <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+            <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+          </button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main" class="blog-main">
+    <div class="container">
+
+      <div class="window window-post">
+        <div class="window-bar" aria-hidden="true">
+          <span class="term-dot term-dot-r"></span>
+          <span class="term-dot term-dot-y"></span>
+          <span class="term-dot term-dot-g"></span>
+          <span class="window-title">LeJEPA: Provable and Scalable Self-Supervised Learning Without the Heuristics</span>
+        </div>
+        <div class="window-body">
+          
+          <a class="back-link" href="../../writing/">
+            <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+            blog
+          </a>
+
+          
+
+          <article class="post">
+            <header class="post-header">
+              <h1>LeJEPA: Provable and Scalable Self-Supervised Learning Without the Heuristics</h1>
+              <p class="post-byline">
+                <time datetime="2025-11-11">paper · Nov 11, 2025</time>
+                
+                · 10 min read
+                
+              </p>
+            </header>
+
+            <div class="prose">
+<ul class="prose-list"><li>Which distribution <em>should</em> the latent space of a world model follow?</li><li>How do you enforce that distribution on a multidimensional embedding?</li><li>Do we need all the heuristics developed so far to avoid collapse?</li><li>Is there a better and scalable alternative?</li></ul>
+<p><a href="https://arxiv.org/abs/2511.08544" target="_blank" rel="noopener">LeJEPA</a> (Balestriero and LeCun, November 2025) answers all four. The paper states four contributions:</p>
+<ol class="prose-list"><li>The optimal embedding distribution for foundation models: the isotropic Gaussian.</li><li><strong>SIGReg</strong>, a distribution-matching objective, provably correct and cheap at scale.</li><li><strong>LeJEPA</strong>, a statistically optimal JEPA that cannot collapse by construction.</li><li>Validation across architectures and domains, and the case for in-domain pretraining.</li></ol>
+<p>Let&#x27;s go through these contributions one by one, and uncover the intuition behind each.</p>
+<h2 id="the-heuristics"><a class="heading-anchor" href="#the-heuristics" aria-hidden="true">#</a>The heuristics</h2>
+<p>Joint-embedding methods learn by making two views of the same input agree in representation space. The catch is that there is a trivial way to agree: map every input to the same vector. Prediction is then perfect and the representation carries no information. This is <strong>collapse</strong>, and it has shaped self-supervised learning for years.</p>
+<p>To prevent it, the field built up a toolbox of fixes:</p>
+<ul class="prose-list"><li><strong>Negative pairs</strong>: push apart embeddings of different inputs (SimCLR, MoCo).</li><li><strong>EMA teacher</strong>: targets from a slow-moving copy of the encoder (BYOL, DINO).</li><li><strong>Stop-gradient</strong>: block gradients through the target branch (BYOL, SimSiam).</li><li><strong>Centering and sharpening</strong>: normalise and temper the teacher&#x27;s outputs (DINO).</li><li><strong>Decorrelation</strong>: spread and decorrelate the dimensions (VICReg, Barlow Twins).</li></ul>
+<p>Each of these works in practice, but each one blocks a symptom of collapse rather than saying what a good embedding should look like. JEPAs inherited the same toolbox. <a href="../i-jepa/">I-JEPA</a> used an EMA target encoder and a stop-gradient; <a href="https://arxiv.org/abs/2404.08471" target="_blank" rel="noopener">V-JEPA</a> kept both.</p>
+<p>The problems show up at scale:</p>
+<ul class="prose-list"><li><strong>Many hyperparameters</strong>: EMA momentum, temperatures and penalty weights, often each with its own schedule, and all of them interacting.</li><li><strong>Limited transfer</strong>: a change of architecture, domain or model size usually means finding the hyperparameter balance again.</li><li><strong>Compute and memory</strong>: contrastive methods need large batches of negatives, and a full covariance penalty grows quadratically with the embedding dimension.</li><li><strong>Loss and quality are decoupled</strong>: a collapsed model can reach a lower loss than a good one, so the health of a run is checked by probing with labels.</li></ul>
+<p>What is missing is a method that prevents collapse by argument rather than by trick, one whose cost grows linearly and whose settings survive a change of scale. LeJEPA starts from a different question: what distribution <em>should</em> the embeddings follow? Once you have that answer, collapse stops being a failure mode you fight and becomes a point in distribution space you are already far away from.</p>
+<h2 id="contribution-1-the-optimal-embedding-distribution"><a class="heading-anchor" href="#contribution-1-the-optimal-embedding-distribution" aria-hidden="true">#</a>Contribution 1: the optimal embedding distribution</h2>
+<p>Let&#x27;s say we are training an encoder now, and someone will use its frozen embeddings for a task later. We do not have any idea about the task, so here is the question to ask: which embedding distribution minimises the <strong>worst-case</strong> downstream prediction risk?</p>
+<p>The paper answers in two steps:</p>
+<ol class="prose-list"><li>For linear probes, it proves that the embeddings need to be <strong>isotropic</strong>.</li><li>For some nonlinear probes, it proves that they also need to be <strong>Gaussian</strong>.</li></ol>
+<h3 id="linear-probes"><a class="heading-anchor" href="#linear-probes" aria-hidden="true">#</a>Linear probes</h3>
+<p>A linear probe fits weights <span class="math-inline">$\hat{\beta}$</span> on the frozen embeddings <span class="math-inline">$Z \in \mathbb{R}^{N \times K}$</span> to predict the labels <span class="math-inline">$y$</span>:</p>
+<div class="math-display">$$\hat{\beta} = \arg\min_{\beta \in \mathbb{R}^K} \; \|y - Z\beta\|_2^2 + \alpha\|\beta\|_2^2$$</div>
+<p>With <span class="math-inline">$\alpha = 0$</span> this is ordinary least squares (OLS); with <span class="math-inline">$\alpha &gt; 0$</span> it is ridge regression. Now take two embeddings with the same total variance: <span class="math-inline">$Z_{\text{iso}}$</span>, spread equally in every direction, and <span class="math-inline">$Z_{\text{aniso}}$</span>, whose covariance eigenvalues <span class="math-inline">$\lambda_1 \le \dots \le \lambda_K$</span> are unequal.</p>
+<div class="cfyb-block cfyb-row cfyb-card" data-label="Lemma 1 — anisotropy amplifies bias"><div class="cfyb-block-body">
+<p>Whenever <span class="math-inline">$\lambda_K &gt; \lambda_1$</span>, there always exists a downstream task for which <span class="math-inline">$Z_{\text{aniso}}$</span> yields a higher-bias estimator than <span class="math-inline">$Z_{\text{iso}}$</span>, for any ridge penalty <span class="math-inline">$\alpha &gt; 0$</span>.</p>
+</div></div>
+<div class="cfyb-block cfyb-row cfyb-card" data-label="Lemma 2 — anisotropy amplifies variance"><div class="cfyb-block-body">
+<p>With <span class="math-inline">$\alpha = 0$</span> (plain OLS), the total variance of <span class="math-inline">$\hat{\beta}$</span> is minimised by the isotropic embedding: <span class="math-inline">$\mathrm{tr}\big(\mathrm{Var}(\hat{\beta}_{\text{aniso}})\big) &gt; \mathrm{tr}\big(\mathrm{Var}(\hat{\beta}_{\text{iso}})\big)$</span>.</p>
+<figure>
+  <img src="../../assets/posts/lejepa/variance.png" alt="Two scatter plots of a binary classification problem. Left: isotropic features, with the learned decision boundaries from repeated fits tightly clustered around the true boundary, variance of beta-hat 0.0056. Right: anisotropic features with condition number 20, where the same fits fan out widely around the true boundary, variance of beta-hat 0.0801." width="922" height="506" loading="lazy" decoding="async">
+  <figcaption>The same classification task, the same probe, the same amount of data. Only the shape of the embedding distribution changes. At condition number 20 the fitted boundaries fan out and the variance of the estimator grows by more than an order of magnitude. Figure from <a href="https://arxiv.org/abs/2511.08544" target="_blank" rel="noopener">LeJEPA</a> (Balestriero and LeCun, 2025).</figcaption>
+</figure>
+</div></div>
+<p>The closed form of the OLS (and ridge) solution makes both proofs simple; they can be found in the paper&#x27;s appendix.</p>
+<p><strong>In short:</strong> Lemmas 1 and 2 give the theoretical motivation for isotropy. Any imbalance between directions costs the linear probe in bias, in variance, or both, so the embedding should spread its variance equally in every direction.</p>
+<h3 id="nonlinear-probes"><a class="heading-anchor" href="#nonlinear-probes" aria-hidden="true">#</a>Nonlinear probes</h3>
+<p>For <span class="math-inline">$k$</span>-NN and kernel-based probes, the paper proves that isotropy is not enough: among all distributions with the same total variance, the isotropic Gaussian is the unique minimiser.</p>
+<div class="cfyb-block cfyb-row cfyb-card" data-label="Theorem 1 — isotropic Gaussian optimality"><div class="cfyb-block-body">
+<p>For <span class="math-inline">$k$</span>-NN and kernel-based probes, among distributions subject to a fixed total-variance constraint, the isotropic Gaussian is the <strong>unique</strong> minimiser of the integrated squared bias.</p>
+</div></div>
+<p>The proof is in the paper&#x27;s appendix. Note that it covers these two nonlinear cases only.</p>
+<div class="cfyb-block" data-label="My thoughts and intuitions"><div class="cfyb-block-body">
+<p><strong>Gaussianity rests on a narrow base.</strong> The linear-probe lemmas only give us isotropy. The step to <em>Gaussian</em> comes from Theorem 1, which covers two probe families, <span class="math-inline">$k$</span>-NN and kernel-based. To be honest, these are not what people usually put on top of a foundation model in practice. On its own, that is not enough to conclude that embeddings should be Gaussian.</p>
+<p><strong>A second argument, from world models.</strong> <a href="https://arxiv.org/abs/2605.26379" target="_blank" rel="noopener">When Does LeJEPA Learn a World Model?</a> (Klindt, LeCun and Balestriero, 2026) reaches the Gaussian from a different direction. It shows that a JEPA whose embeddings are kept isotropic Gaussian recovers the true latent variables of the world up to a rotation, and that the Gaussian is the <em>only</em> latent distribution for which this kind of linear recovery is possible.</p>
+<figure>
+  <img src="../../assets/posts/lejepa/identifiability.jpg" alt="Three point clouds coloured by angle. Left: the true latent world, a smooth colour wheel. Middle: the observed data, the same points pushed through a spiral mixing function so the colour wheel is wound into a spiral. Right: the learned representation, a clean colour wheel again, rotated relative to the first." width="1500" height="518" loading="lazy" decoding="async">
+  <figcaption>The true world (left) is mixed by a spiral into the observed data (middle); the learned representation (right) is the original again, up to a rotation. Figure from <a href="https://arxiv.org/abs/2605.26379" target="_blank" rel="noopener">When Does LeJEPA Learn a World Model?</a> (Klindt, LeCun and Balestriero, 2026).</figcaption>
+</figure>
+<p>These theorems hold under assumptions: latent dimensions that evolve independently, the same distribution for both views, and transitions with additive noise. Real data rarely satisfies all three, so some questions stay open.</p>
+<p><strong>The intuition I keep coming back to: maximum entropy.</strong> Among all distributions with the same total variance, the isotropic Gaussian has the highest entropy. It commits to the least structure the budget allows. If we have no idea what the downstream task will be, that is exactly what we want: keep the embeddings as general as possible. A good embedding then does two things at once. It keeps similar examples close together, and it spreads everything out to push the overall entropy up, so the embedding space holds as much generic information as possible for whatever task comes later.</p>
+<p><strong>What if we do know something about the task?</strong> In practice we often know the domain, or roughly which tasks the model will serve. Optimising for the worst case over <em>all</em> tasks then throws that knowledge away. How would the optimal distribution change? Would it become anisotropic along the directions that matter, or not Gaussian at all? I would be curious to see work on this.</p>
+</div></div>
+<h3 id="what-this-means-for-collapse"><a class="heading-anchor" href="#what-this-means-for-collapse" aria-hidden="true">#</a>What this means for collapse</h3>
+<p>Collapse stops being a separate phenomenon requiring a separate mechanism. A collapsed encoder produces a degenerate distribution, which is simply the most extreme way of missing the isotropic Gaussian. Anisotropy is bad for exactly the same reason, just less dramatically. One quantity explains both the catastrophic failure and the everyday mediocrity.</p>
+<h2 id="contribution-2-sigreg"><a class="heading-anchor" href="#contribution-2-sigreg" aria-hidden="true">#</a>Contribution 2: SIGReg</h2>
+<p>Knowing the target distribution is one thing. Enforcing it on a high-dimensional embedding at every training step is another: estimating a high-dimensional density directly is far too expensive.</p>
+<p><strong>Sketched Isotropic Gaussian Regularization</strong> (SIGReg) avoids that with one idea: a distribution is fully determined by its one-dimensional projections (the Cramér–Wold theorem). So instead of testing in <span class="math-inline">$K$</span> dimensions, test in one dimension, many times:</p>
+<ol class="prose-list"><li>Sample random directions.</li><li>Project the batch of embeddings onto each direction.</li><li>Measure how far each projection is from a standard normal, and average.</li></ol>
+<figure>
+  <img src="../../assets/posts/lejepa/sigreg.png" alt="Left: a two-dimensional embedding distribution shown as a heat map of scattered modes, with three coloured arrows marking random projection directions. Right: the three corresponding one-dimensional projected densities, each plotted against the standard normal, with the shaded area between them marked as error." width="1052" height="558" loading="lazy" decoding="async">
+  <figcaption>SIGReg in one picture. Each random direction turns the embedding cloud into a one-dimensional density; the shaded area between that density and the standard normal is the penalty. Enough directions and nothing but an isotropic Gaussian survives. Figure from <a href="https://arxiv.org/abs/2511.08544" target="_blank" rel="noopener">LeJEPA</a> (Balestriero and LeCun, 2025).</figcaption>
+</figure>
+<p>One direction constrains almost nothing. With enough random directions, the only distribution that passes all of them is the isotropic Gaussian.</p>
+<p>For step 3 the paper uses the <strong>Epps–Pulley</strong> test, which compares characteristic functions. It is chosen for training rather than for statistics: its gradients are bounded, so the regulariser cannot blow up, and it needs no sorting. The whole thing runs in linear time and memory and splits easily across GPUs.</p>
+<div class="cfyb-block" data-label="My thoughts"><div class="cfyb-block-body">
+<p>To me, this is a genuinely beautiful algorithm. The idea fits in a sentence, every step has a clear reason behind it, and the result is both provably correct and cheap enough to run at scale. It is honestly one of the reasons I got interested in JEPA-style pretraining, and in self-supervised learning more generally.</p>
+<p>The heuristics that came before always felt a little unsatisfying to me. Each one worked, but they read like patches added one at a time, and it was hard to say why that particular combination was the right one. SIGReg shows that it can be done differently: decide what the embeddings should look like, enforce exactly that, and collapse is handled as a consequence rather than as a separate fight.</p>
+</div></div>
+<h2 id="contribution-3-lejepa"><a class="heading-anchor" href="#contribution-3-lejepa" aria-hidden="true">#</a>Contribution 3: LeJEPA</h2>
+<p>Now combine the two, and the architecture is almost embarrassingly plain:</p>
+<ol class="prose-list"><li>Take an image and make several augmented views of it: a couple of large <em>global</em> views and several small <em>local</em> ones.</li><li>Encode every view with <strong>the same encoder</strong>.</li><li><strong>Prediction:</strong> pull every view&#x27;s embedding toward the average embedding of the global views.</li><li><strong>SIGReg:</strong> push the embeddings toward an isotropic Gaussian.</li></ol>
+<p>The loss is just the sum of the two, with a single weight:</p>
+<div class="math-display">$$\mathcal{L}_{\text{LeJEPA}} = \mathcal{L}_{\text{pred}} + \lambda \cdot \mathrm{SIGReg}$$</div>
+<p>That weight is the only hyperparameter, and <span class="math-inline">$\lambda = 0.05$</span> works across the board. The whole implementation is about 50 lines of PyTorch.</p>
+<p>Collapse is now ruled out by the objective itself. Prediction alone would be happiest with a constant encoder, since then every view matches perfectly. But a constant embedding looks nothing like a Gaussian along any direction, so SIGReg does not allow it.</p>
+<p>Here is what that deletes:</p>
+<div class="table-wrap"><table><thead><tr><th>Removed</th><th>Why it is no longer needed</th></tr></thead><tbody><tr><td>Stop-gradient</td><td>Bounded gradients; nothing to protect against</td></tr><tr><td>Teacher–student / EMA</td><td>No asymmetry required: one encoder, all views</td></tr><tr><td>Predictor network</td><td>Views predict the global mean directly</td></tr><tr><td>Variance + covariance terms</td><td>Subsumed by matching the full distribution</td></tr><tr><td>Temperature and momentum schedules</td><td>Nothing to anneal</td></tr><tr><td>Per-architecture tuning</td><td>Same <span class="math-inline">$\lambda$</span> across families (see below)</td></tr></tbody></table></div>
+<h2 id="contribution-4-validation-at-scale"><a class="heading-anchor" href="#contribution-4-validation-at-scale" aria-hidden="true">#</a>Contribution 4: validation at scale</h2>
+<p>The claim to test is not &quot;LeJEPA is the most accurate method&quot;, but &quot;LeJEPA works without retuning&quot;. That claim only holds up if you sweep widely, and the paper does.</p>
+<div class="stat-row">
+  <div class="stat-tile"><span class="stat-value">~50</span><span class="stat-label">Models pretrained with the same hyperparameters</span></div>
+  <div class="stat-tile"><span class="stat-value">8</span><span class="stat-label">Architecture families, from ResNets to ViTs</span></div>
+  <div class="stat-tile"><span class="stat-value">91.5–95%</span><span class="stat-label">Top-1 on ImageNet-10, for every one of them</span></div>
+  <div class="stat-tile"><span class="stat-value">1.8B</span><span class="stat-label">Parameters in the largest model trained stably</span></div>
+</div>
+<p><strong>Competitive on ImageNet-1K.</strong> With a frozen backbone and a linear probe, LeJEPA lands on par with I-JEPA on the same ViT-H/14, without any of its anti-collapse machinery.</p>
+<div class="bar-compare" role="img" aria-label="ImageNet-1K linear probe top-1 accuracy, ViT-H/14: I-JEPA 79.3 percent with EMA teacher and stop-gradient; LeJEPA 79.0 percent with SIGReg only.">
+  <div class="bar-compare-title">ImageNet-1K linear probe, top-1 · ViT-H/14</div>
+  <div class="bar-row" title="I-JEPA · 79.3% top-1 · EMA teacher + stop-gradient">
+    <span class="bar-name">I-JEPA</span>
+    <span class="bar-track"><span class="bar-fill is-muted" style="width: 79.3%"></span></span>
+    <span class="bar-value">79.3%</span>
+    <span class="bar-tags"><span class="bar-tag">EMA teacher</span><span class="bar-tag">stop-gradient</span></span>
+  </div>
+  <div class="bar-row" title="LeJEPA · 79.0% top-1 · SIGReg only">
+    <span class="bar-name"><strong>LeJEPA</strong></span>
+    <span class="bar-track"><span class="bar-fill" style="width: 79%"></span></span>
+    <span class="bar-value">79.0%</span>
+    <span class="bar-tags"><span class="bar-tag is-accent">SIGReg only</span></span>
+  </div>
+  <div class="bar-axis"><span></span><span class="bar-axis-ticks"><span>0%</span><span>50%</span><span>100%</span></span><span></span></div>
+</div>
+<p><strong>Training loss tracks downstream accuracy.</strong> Remember the last problem with the heuristics: loss and quality were decoupled. Here they move together.</p>
+<div class="meter-stack" role="img" aria-label="Spearman correlation between LeJEPA training loss and linear-probe accuracy: 85 percent for the raw loss, 99 percent with the paper's scaling correction.">
+  <div class="meter-title">Spearman correlation · training loss vs linear-probe accuracy</div>
+  <div class="meter-row" title="Raw training loss · 85%">
+    <span class="meter-name">Raw loss</span>
+    <span class="meter-track"><span class="meter-fill" style="width: 85%"></span></span>
+    <span class="meter-value">85%</span>
+  </div>
+  <div class="meter-row" title="With the paper's scaling correction · 99%">
+    <span class="meter-name">With scaling correction</span>
+    <span class="meter-track"><span class="meter-fill" style="width: 99%"></span></span>
+    <span class="meter-value">99%</span>
+  </div>
+</div>
+<figure>
+  <img src="../../assets/posts/lejepa/loss-vs-accuracy.png" alt="Scatter plot of prediction loss against SIGReg loss on log scales for ViT-Base-14 on ImageNet-1K, with points coloured by downstream accuracy. Colour varies smoothly from blue at high loss to red at low loss." width="1904" height="1538" loading="lazy" decoding="async">
+  <figcaption>Each point is a training run. Colour is downstream accuracy, and it varies smoothly with the two loss terms, which is what makes checkpoint selection possible without labels. Figure from <a href="https://arxiv.org/abs/2511.08544" target="_blank" rel="noopener">LeJEPA</a> (Balestriero and LeCun, 2025).</figcaption>
+</figure>
+<p>This is the result I find most useful in practice: if the loss tracks quality, you can select checkpoints, stop early and search hyperparameters without any labels.</p>
+<p><strong>In-domain pretraining beats frontier transfer.</strong> On Galaxy10 (galaxy images, about as far from ImageNet as it gets), LeJEPA pretrained on the galaxy images themselves is compared with DINOv2 and DINOv3 transferred from natural images. In every setting, the best in-domain LeJEPA model comes out on top:</p>
+<div class="result-table-wrap" role="region" aria-label="Galaxy10 accuracy, in-domain LeJEPA versus frontier transfer" tabindex="0">
+<table class="result-table">
+<caption>Galaxy10 accuracy (%) · best in each column in bold</caption>
+<thead><tr><th rowspan="2" scope="col">Model</th><th colspan="2" scope="colgroup">Full fine-tuning</th><th colspan="2" scope="colgroup">Frozen backbone</th></tr>
+<tr><th scope="col">1-shot</th><th scope="col">Full</th><th scope="col">1-shot</th><th scope="col">Full</th></tr></thead>
+<tbody>
+<tr class="result-group"><th colspan="5" scope="rowgroup">LeJEPA, pretrained in-domain</th></tr>
+<tr><th scope="row"><span class="result-name">LeJEPA</span> <span class="result-arch">ConvNeXt-V2 Nano</span></th><td class="is-ours is-best" title="LeJEPA ConvNeXt-V2 Nano · 29.42%"><span class="result-num">29.42</span><span class="result-bar"><span style="width: 29.42%"></span></span></td><td class="is-ours" title="LeJEPA ConvNeXt-V2 Nano · 82.72%"><span class="result-num">82.72</span><span class="result-bar"><span style="width: 82.72%"></span></span></td><td class="is-ours" title="LeJEPA ConvNeXt-V2 Nano · 28.74%"><span class="result-num">28.74</span><span class="result-bar"><span style="width: 28.74%"></span></span></td><td class="is-ours" title="LeJEPA ConvNeXt-V2 Nano · 76.52%"><span class="result-num">76.52</span><span class="result-bar"><span style="width: 76.52%"></span></span></td></tr>
+<tr><th scope="row"><span class="result-name">LeJEPA</span> <span class="result-arch">ResNet-34</span></th><td class="is-ours" title="LeJEPA ResNet-34 · 24.27%"><span class="result-num">24.27</span><span class="result-bar"><span style="width: 24.27%"></span></span></td><td class="is-ours is-best" title="LeJEPA ResNet-34 · 83.28%"><span class="result-num">83.28</span><span class="result-bar"><span style="width: 83.28%"></span></span></td><td class="is-ours is-best" title="LeJEPA ResNet-34 · 31.08%"><span class="result-num">31.08</span><span class="result-bar"><span style="width: 31.08%"></span></span></td><td class="is-ours is-best" title="LeJEPA ResNet-34 · 78.17%"><span class="result-num">78.17</span><span class="result-bar"><span style="width: 78.17%"></span></span></td></tr>
+<tr class="result-group"><th colspan="5" scope="rowgroup">Frontier models, transferred</th></tr>
+<tr><th scope="row"><span class="result-name">DINOv2</span> <span class="result-arch">ViT-S/16</span></th><td class="is-ref" title="DINOv2 ViT-S/16 · 21.05%"><span class="result-num">21.05</span><span class="result-bar"><span style="width: 21.05%"></span></span></td><td class="is-ref" title="DINOv2 ViT-S/16 · 78.34%"><span class="result-num">78.34</span><span class="result-bar"><span style="width: 78.34%"></span></span></td><td class="is-ref" title="DINOv2 ViT-S/16 · 27.68%"><span class="result-num">27.68</span><span class="result-bar"><span style="width: 27.68%"></span></span></td><td class="is-ref" title="DINOv2 ViT-S/16 · 67.62%"><span class="result-num">67.62</span><span class="result-bar"><span style="width: 67.62%"></span></span></td></tr>
+<tr><th scope="row"><span class="result-name">DINOv3</span> <span class="result-arch">ViT-S/16</span></th><td class="is-ref" title="DINOv3 ViT-S/16 · 24.71%"><span class="result-num">24.71</span><span class="result-bar"><span style="width: 24.71%"></span></span></td><td class="is-ref" title="DINOv3 ViT-S/16 · 81.60%"><span class="result-num">81.60</span><span class="result-bar"><span style="width: 81.6%"></span></span></td><td class="is-ref" title="DINOv3 ViT-S/16 · 30.17%"><span class="result-num">30.17</span><span class="result-bar"><span style="width: 30.17%"></span></span></td><td class="is-ref" title="DINOv3 ViT-S/16 · 71.38%"><span class="result-num">71.38</span><span class="result-bar"><span style="width: 71.38%"></span></span></td></tr>
+</tbody></table></div>
+<p>The gap is largest with a frozen backbone and full labels: 78.2% against 71.4% for DINOv3. For specialised domains, training your own encoder becomes a realistic option.</p>
+<p>More results, including ImageNet-100, Food101 and the full hyperparameter sweeps, are in the paper.</p>
+<h2 id="summary"><a class="heading-anchor" href="#summary" aria-hidden="true">#</a>Summary</h2>
+<p>LeJEPA replaces the toolbox of anti-collapse heuristics with one principled answer:</p>
+<div class="summary-grid">
+  <div class="summary-card">
+    <span class="summary-num">1</span>
+    <span class="summary-eyebrow">What to aim for</span>
+    <span class="summary-title">The isotropic Gaussian</span>
+    <span class="summary-text">The embedding distribution aimed at minimising worst-case downstream risk.</span>
+  </div>
+  <div class="summary-card">
+    <span class="summary-num">2</span>
+    <span class="summary-eyebrow">How to get there</span>
+    <span class="summary-title">SIGReg</span>
+    <span class="summary-text">Matches that distribution through random 1-D projections, in linear time.</span>
+  </div>
+  <div class="summary-card">
+    <span class="summary-num">3</span>
+    <span class="summary-eyebrow">What is left</span>
+    <span class="summary-title">One encoder, one loss, one hyperparameter</span>
+    <span class="summary-text">No stop-gradient, no teacher, no schedules.</span>
+  </div>
+  <div class="summary-card">
+    <span class="summary-num">4</span>
+    <span class="summary-eyebrow">What it gives</span>
+    <span class="summary-title">Stable and scalable pretraining</span>
+    <span class="summary-text">Across architectures, with a training loss that tracks downstream quality and in-domain pretraining that beats frontier transfer.</span>
+  </div>
+</div>
+            </div>
+          </article>
+
+          <footer class="post-footer">
+            <p>
+              Written by Gagik Navasardyan.
+              <a href="mailto:gagiknavasard@gmail.com">Send a reply</a>.
+            </p>
+            <a class="back-link" href="../../writing/">
+              <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+              all posts
+            </a>
+          </footer>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2026 Gagik Navasardyan</p>
+    </div>
+  </footer>
+</body>
+</html>

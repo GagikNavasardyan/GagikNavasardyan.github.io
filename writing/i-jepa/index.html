@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture · Gagik Navasardyan</title>
+  <meta name="description" content="I-JEPA, the first JEPA for images: predict the representations of masked image blocks from a visible context block, with no hand-crafted augmentations and no pixel reconstruction.">
+  <meta name="theme-color" content="#FFFFFF">
+  <link rel="canonical" href="https://gagiknavasardyan.github.io/writing/i-jepa/">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture">
+  <meta property="og:description" content="I-JEPA, the first JEPA for images: predict the representations of masked image blocks from a visible context block, with no hand-crafted augmentations and no pixel reconstruction.">
+  <meta property="og:image" content="https://gagiknavasardyan.github.io/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Gagik Navasardyan · MSc in Artificial Intelligence, UB · UPC · URV, Barcelona.">
+  <meta property="og:url" content="https://gagiknavasardyan.github.io/writing/i-jepa/">
+  <meta property="article:published_time" content="2026-06-01">
+  <meta property="article:author" content="Gagik Navasardyan">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+  <script src="../../theme.js"></script>
+  <script src="../../transitions.js"></script>
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../../blog.css">
+  <script src="../../blog.js" defer></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}], throwOnError:false});"></script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture",
+    "datePublished": "2026-06-01",
+    "author": { "@type": "Person", "name": "Gagik Navasardyan" },
+    "url": "https://gagiknavasardyan.github.io/writing/i-jepa/"
+  }
+  </script>
+</head>
+<body class="blog">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <nav class="nav container" aria-label="Main">
+      <a class="nav-logo" href="../../index.html" aria-label="Back to the portfolio">GN</a>
+      <ul class="nav-menu" id="nav-menu">
+        <li><a class="nav-writing active" href="../../writing/"><span class="nav-writing-dot" aria-hidden="true"></span>Blog</a></li>
+      </ul>
+      <div class="nav-actions">
+          <button class="theme-toggle" type="button" aria-pressed="false" aria-label="Switch to dark theme" title="Toggle theme">
+            <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+            <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+          </button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main" class="blog-main">
+    <div class="container">
+
+      <div class="window window-post">
+        <div class="window-bar" aria-hidden="true">
+          <span class="term-dot term-dot-r"></span>
+          <span class="term-dot term-dot-y"></span>
+          <span class="term-dot term-dot-g"></span>
+          <span class="window-title">Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture</span>
+        </div>
+        <div class="window-body">
+          
+          <a class="back-link" href="../../writing/">
+            <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+            blog
+          </a>
+
+          
+
+          <article class="post">
+            <header class="post-header">
+              <h1>Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture</h1>
+              <p class="post-byline">
+                <time datetime="2023-01-19">paper · Jan 19, 2023</time>
+                
+                · 7 min read
+                
+              </p>
+            </header>
+
+            <div class="prose">
+<ul class="prose-list"><li>Do we really need hand-crafted augmentations to learn good image representations?</li><li>Should it predict pixels, or something more abstract?</li><li>What makes a prediction task teach semantics rather than texture?</li></ul>
+<p><a href="https://arxiv.org/abs/2301.08243" target="_blank" rel="noopener">I-JEPA</a> (Assran, Duval, Misra, Bojanowski, Vincent, Rabbat, LeCun and Ballas, January 2023) is the first working JEPA for images. It takes the main idea of <a href="../path-towards-autonomous-machine-intelligence/">A Path Towards Autonomous Machine Intelligence</a>, predicting in representation space rather than in pixel space, and turns it into something you can train. Let&#x27;s see how it learns from images without labels or hand-crafted augmentations, and why predicting representations beats predicting pixels.</p>
+<h2 id="ways-to-learn-from-images"><a class="heading-anchor" href="#ways-to-learn-from-images" aria-hidden="true">#</a>Ways to learn from images</h2>
+<figure>
+  <img src="../../assets/posts/i-jepa/three-architectures.png" alt="Three self-supervised architectures side by side. (a) Joint-Embedding Architecture: x and y each go through their own encoder, and a distance D compares the two embeddings s-x and s-y. (b) Generative Architecture: x goes through an encoder and a decoder, conditioned on a latent z, to produce y-hat, which is compared to y itself. (c) Joint-Embedding Predictive Architecture: x goes through an encoder and a predictor, conditioned on z, to produce a predicted embedding s-y-hat, which is compared to the embedding s-y from the y-encoder." width="3250" height="732" loading="lazy" decoding="async">
+  <figcaption>Three ways to learn from images: compare embeddings, reconstruct the input, or predict embeddings. Figure from <a href="https://arxiv.org/abs/2301.08243" target="_blank" rel="noopener">I-JEPA</a> (Assran et al., 2023).</figcaption>
+</figure>
+<p>Before I-JEPA, self-supervised image models came in two families:</p>
+<ul class="prose-list"><li><strong>Invariance-based</strong>: show the model two augmented views of one image (crops, colour jitter, blur) and make their embeddings agree (SimCLR, BYOL, DINO, iBOT). Strong semantic features, but the augmentations are hand-crafted, and they decide what the model is allowed to ignore.</li><li><strong>Generative</strong>: hide part of the image and reconstruct the missing pixels or tokens (MAE, BEiT). No heavy augmentations, but the model spends its capacity on low-level detail, and the features need fine-tuning to shine.</li></ul>
+<p>I-JEPA takes a third way and borrows one idea from each: it <strong>masks</strong> like the generative methods, but <strong>predicts representations</strong> like the invariance methods. Instead of reconstructing the missing part of the image, it predicts what that part looks like in representation space. This is architecture (c) in the figure above.</p>
+<h2 id="the-architecture"><a class="heading-anchor" href="#the-architecture" aria-hidden="true">#</a>The architecture</h2>
+<p>Now let&#x27;s look at how the authors turn this into a training signal, using only images and no labels at all.</p>
+<figure>
+  <img src="../../assets/posts/i-jepa/architecture.png" alt="The I-JEPA architecture. A context block of an image goes through the context encoder f-theta. The predictor g-phi takes its output together with mask tokens for three target blocks, shown in blue, red and yellow, and predicts a representation for each. The full image goes through the target encoder f-theta-bar, the outputs at the three target locations are selected, and each prediction is compared to its target with an L2 loss." width="1818" height="1760" loading="lazy" decoding="async">
+  <figcaption>One context block predicts the representations of several target blocks. The targets come from encoding the whole image and selecting the target positions. Figure from <a href="https://arxiv.org/abs/2301.08243" target="_blank" rel="noopener">I-JEPA</a> (Assran et al., 2023).</figcaption>
+</figure>
+<p>Training runs in five steps:</p>
+<div class="cfyb-block cfyb-row cfyb-card" data-label="Masking and target selection — 4 large target blocks, one big context block"><div class="cfyb-block-body">
+<p>The image is cut into patches. Four rectangular <strong>target blocks</strong> (each 15–20% of the image) are the parts the model has to predict, and one large <strong>context block</strong> (85–100% of the image) is the part it gets to see, minus any patches that overlap a target, so it never sees the answer.</p>
+<p>Note that the target blocks are taken from the <em>output</em> of the target encoder, not cut out of the input image. The target encoder sees the whole image, so each target representation already carries context from around it. This is what keeps the targets at a high semantic level.</p>
+<figure>
+  <svg viewBox="0 0 720 268" role="img" aria-label="Left: a context block covering most of the image with four target regions removed. Right: the four target blocks to be predicted.">
+    <g fill="var(--accent)" opacity="0.14">
+      <rect x="40" y="40" width="30" height="30" rx="2"/><rect x="72" y="40" width="30" height="30" rx="2"/><rect x="104" y="40" width="30" height="30" rx="2"/><rect x="136" y="40" width="30" height="30" rx="2"/><rect x="168" y="40" width="30" height="30" rx="2"/><rect x="200" y="40" width="30" height="30" rx="2"/>
+      <rect x="40" y="72" width="30" height="30" rx="2"/><rect x="72" y="72" width="30" height="30" rx="2"/><rect x="104" y="72" width="30" height="30" rx="2"/><rect x="136" y="72" width="30" height="30" rx="2"/><rect x="168" y="72" width="30" height="30" rx="2"/><rect x="200" y="72" width="30" height="30" rx="2"/>
+      <rect x="40" y="104" width="30" height="30" rx="2"/><rect x="72" y="104" width="30" height="30" rx="2"/><rect x="104" y="104" width="30" height="30" rx="2"/><rect x="136" y="104" width="30" height="30" rx="2"/><rect x="168" y="104" width="30" height="30" rx="2"/><rect x="200" y="104" width="30" height="30" rx="2"/>
+      <rect x="40" y="136" width="30" height="30" rx="2"/><rect x="72" y="136" width="30" height="30" rx="2"/><rect x="104" y="136" width="30" height="30" rx="2"/><rect x="136" y="136" width="30" height="30" rx="2"/><rect x="168" y="136" width="30" height="30" rx="2"/><rect x="200" y="136" width="30" height="30" rx="2"/>
+      <rect x="40" y="168" width="30" height="30" rx="2"/><rect x="72" y="168" width="30" height="30" rx="2"/><rect x="104" y="168" width="30" height="30" rx="2"/><rect x="136" y="168" width="30" height="30" rx="2"/><rect x="168" y="168" width="30" height="30" rx="2"/><rect x="200" y="168" width="30" height="30" rx="2"/>
+      <rect x="40" y="200" width="30" height="30" rx="2"/><rect x="72" y="200" width="30" height="30" rx="2"/><rect x="104" y="200" width="30" height="30" rx="2"/><rect x="136" y="200" width="30" height="30" rx="2"/><rect x="168" y="200" width="30" height="30" rx="2"/><rect x="200" y="200" width="30" height="30" rx="2"/>
+    </g>
+    <g fill="var(--bg)" stroke="var(--border-muted)" stroke-width="1.2" stroke-dasharray="3 3">
+      <rect x="40" y="40" width="62" height="62" rx="3"/>
+      <rect x="136" y="72" width="62" height="62" rx="3"/>
+      <rect x="72" y="136" width="62" height="62" rx="3"/>
+      <rect x="168" y="168" width="62" height="62" rx="3"/>
+    </g>
+    <text x="135" y="253" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="var(--text-muted)">context: scale 0.85–1.0, targets removed</text>
+    <g stroke="var(--accent)" stroke-width="1.8" fill="none" stroke-linecap="round">
+      <path d="M290 135 H400"/>
+    </g>
+    <path d="M396 129 L410 135 L396 141 Z" fill="var(--accent)"/>
+    <text x="345" y="122" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="var(--text)">predictor</text>
+    <text x="345" y="158" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="var(--text-muted)">+ position</text>
+    <g fill="var(--accent)">
+      <rect x="450" y="40" width="62" height="62" rx="3"/>
+      <rect x="546" y="72" width="62" height="62" rx="3"/>
+      <rect x="482" y="136" width="62" height="62" rx="3"/>
+      <rect x="578" y="168" width="62" height="62" rx="3"/>
+    </g>
+    <rect x="450" y="40" width="190" height="190" rx="3" fill="none" stroke="var(--border)" stroke-width="1.2"/>
+    <text x="545" y="253" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="var(--text-muted)">4 targets: scale 0.15–0.2 each</text>
+  </svg>
+  <figcaption>Multi-block masking. Four target blocks are cut out of the context, so nothing in the input overlaps what is being predicted. Diagram mine, drawn to the sampling parameters given in the paper.</figcaption>
+</figure>
+<p>These numbers are not guesses. The paper runs a careful ablation over the number of targets, their size and the size of the context, and this recipe is the one that came out on top. The full tables are in the paper.</p>
+<p>The chart below compares it with other ways of masking. Every model is a ViT-B/16 trained for 300 epochs in exactly the same way; only the mask changes. Each is then evaluated with a linear probe on ImageNet using just 1% of the labels, so higher means the representation captures more semantics on its own:</p>
+<ul class="prose-list"><li><strong>Single block</strong>: one big target block, with the rest of the image as context.</li><li><strong>Random</strong>: small patches scattered at random across the image as targets.</li><li><strong>Rasterized</strong>: the image is split into quadrants, and one quadrant predicts the other three.</li></ul>
+<div class="bar-compare" role="img" aria-label="Masking strategy ablation: multi-block 54.2, single block 20.2, random patches 17.6, rasterized quadrants 15.5 percent top-1.">
+  <div class="bar-compare-title">ImageNet-1K top-1, 1% of labels · ViT-B/16, 300 epochs</div>
+  <div class="bar-row" title="Multi-block · 54.2%">
+    <span class="bar-name"><strong>Multi-block</strong></span>
+    <span class="bar-track"><span class="bar-fill" style="width: 54.2%"></span></span>
+    <span class="bar-value">54.2%</span>
+    <span class="bar-tags"><span class="bar-tag is-accent">default</span></span>
+  </div>
+  <div class="bar-row" title="Single block · 20.2%">
+    <span class="bar-name">Single block</span>
+    <span class="bar-track"><span class="bar-fill is-muted" style="width: 20.2%"></span></span>
+    <span class="bar-value">20.2%</span>
+  </div>
+  <div class="bar-row" title="Random · 17.6%">
+    <span class="bar-name">Random</span>
+    <span class="bar-track"><span class="bar-fill is-muted" style="width: 17.6%"></span></span>
+    <span class="bar-value">17.6%</span>
+  </div>
+  <div class="bar-row" title="Rasterized · 15.5%">
+    <span class="bar-name">Rasterized</span>
+    <span class="bar-track"><span class="bar-fill is-muted" style="width: 15.5%"></span></span>
+    <span class="bar-value">15.5%</span>
+  </div>
+  <div class="bar-axis"><span></span><span class="bar-axis-ticks"><span>0%</span><span>50%</span><span>100%</span></span><span></span></div>
+</div>
+<p>Random patches score less than a third of multi-block. Scattered patches can be filled in from their neighbours, so the model never has to understand the image.</p>
+</div></div>
+<div class="cfyb-block cfyb-row cfyb-card" data-label="Context encoder — $f_\theta$, a ViT over the visible patches"><div class="cfyb-block-body">
+<p>Do you really need to know what a ViT is? 😄</p>
+<p>Fine: a ViT (Vision Transformer) is a stack of transformer layers, each a self-attention block followed by a fully-connected MLP.</p>
+<p>Here a ViT, <span class="math-inline">$f_\theta$</span>, encodes only the visible context patches. This is the encoder you keep after training.</p>
+</div></div>
+<div class="cfyb-block cfyb-row cfyb-card" data-label="Target encoder — $f_{\bar\theta}$, EMA copy of $f_\theta$, sees the whole image"><div class="cfyb-block-body">
+<p><span class="math-inline">$f_{\bar\theta}$</span> encodes the <em>whole</em> image. It has the same architecture as the context encoder, but it is not trained directly: its weights are an exponential moving average (EMA) of the context encoder&#x27;s, and it receives no gradients. The targets are its outputs at the positions of each target block.</p>
+</div></div>
+<div class="cfyb-block cfyb-row cfyb-card" data-label="Predictor — $g_\phi$, narrow ViT, predicts each target"><div class="cfyb-block-body">
+<p><span class="math-inline">$g_\phi$</span>, a narrow ViT, takes the context encoder&#x27;s output plus mask tokens that carry a target block&#x27;s position, and predicts the representations of that block. It runs once for each of the four targets.</p>
+</div></div>
+<div class="cfyb-block cfyb-row cfyb-card" data-label="Loss — L2 between predicted and target representations"><div class="cfyb-block-body">
+<p>You made it this far into a post about self-supervised learning and you need L2 explained? 🙃 No. Close this tab, go back to your first linear regression lecture, and come back when you have made peace with it. 😡</p>
+</div></div>
+<p>That is the whole method: no negative pairs, no pixel decoder, no colour jitter, no random resized crop.</p>
+<p>This design is what lets I-JEPA learn in representation space instead of pixel space: the model never has to redraw an image, only predict what the hidden parts <em>mean</em>.</p>
+<h2 id="predicting-representations-not-pixels"><a class="heading-anchor" href="#predicting-representations-not-pixels" aria-hidden="true">#</a>Predicting representations, not pixels</h2>
+<p>The ablation that justifies the whole architecture compares two versions of the same ViT-L/16: one where the predictor predicts the target encoder&#x27;s representations, and one where it predicts the raw pixels of the target blocks. The pixel version even trains longer, 800 epochs against 500:</p>
+<div class="bar-compare" role="img" aria-label="Prediction target ablation, ViT-L/16: representations 66.9 percent after 500 epochs, pixels 40.7 percent after 800 epochs.">
+  <div class="bar-compare-title">ImageNet-1K top-1, 1% of labels · ViT-L/16 · what the predictor predicts</div>
+  <div class="bar-row" title="Representations · 66.9% · 500 epochs">
+    <span class="bar-name"><strong>Representations</strong></span>
+    <span class="bar-track"><span class="bar-fill" style="width: 66.9%"></span></span>
+    <span class="bar-value">66.9%</span>
+    <span class="bar-tags"><span class="bar-tag is-accent">500 epochs</span></span>
+  </div>
+  <div class="bar-row" title="Pixels · 40.7% · 800 epochs">
+    <span class="bar-name">Pixels</span>
+    <span class="bar-track"><span class="bar-fill is-muted" style="width: 40.7%"></span></span>
+    <span class="bar-value">40.7%</span>
+    <span class="bar-tags"><span class="bar-tag">800 epochs</span></span>
+  </div>
+  <div class="bar-axis"><span></span><span class="bar-axis-ticks"><span>0%</span><span>50%</span><span>100%</span></span><span></span></div>
+</div>
+<p>In pixel space the target is fixed by the data, so every unpredictable detail (texture, lighting, noise) ends up in the loss. In representation space the target encoder decides what is worth predicting, and that detail can simply be left out.</p>
+<p>You can see this by decoding the predictor&#x27;s output back into pixels with a separately trained generative model. Each sample below is one guess at what fills the green box:</p>
+<figure>
+  <img src="../../assets/posts/i-jepa/predictor-samples.png" alt="Four rows of images: a magpie, a burger, a stopwatch and oranges. In each row the first image is the original, the second is the context with grey masked regions and an empty green target box, and the next four are samples decoded from the I-JEPA predictor inside the green box. The samples agree on the object part and its pose, such as the back of the bird or the dial of the watch, but differ in fine detail and background." width="1168" height="872" loading="lazy" decoding="async">
+  <figcaption>The samples keep the object part and its pose, not the fine detail. Figure from <a href="https://arxiv.org/abs/2301.08243" target="_blank" rel="noopener">I-JEPA</a> (Assran et al., 2023).</figcaption>
+</figure>
+<h2 id="results"><a class="heading-anchor" href="#results" aria-hidden="true">#</a>Results</h2>
+<p>I-JEPA&#x27;s strongest argument is efficiency. It needs no decoder and no pile of augmented views per image, so each step is cheap:</p>
+<div class="stat-row">
+  <div class="stat-tile"><span class="stat-value">79.3%</span><span class="stat-label">ImageNet-1K linear probe, ViT-H/14, 300 epochs</span></div>
+  <div class="stat-tile"><span class="stat-value">81.1%</span><span class="stat-label">Same, ViT-H/16 at 448px resolution</span></div>
+  <div class="stat-tile"><span class="stat-value">77.3%</span><span class="stat-label">With only 1% of the labels, ViT-H/16 at 448px</span></div>
+  <div class="stat-tile"><span class="stat-value">&lt;72h</span><span class="stat-label">To train a ViT-H/14 on 16 A100 GPUs</span></div>
+</div>
+<figure>
+  <img src="../../assets/posts/i-jepa/gpu-hours.png" alt="ImageNet-1K linear evaluation top-1 accuracy against pretraining GPU hours on a log scale. I-JEPA ViT-H/14 at 300 epochs reaches 79.3 percent at about a thousand GPU hours, and I-JEPA ViT-H/16 at 448 pixels reaches 81.1 percent at a few thousand. iBOT ViT-S/16, CAE ViT-L/16, data2vec ViT-L/16 and MAE ViT-H/14 all sit between 77 and 78 percent while using more GPU hours." width="1822" height="1248" loading="lazy" decoding="async">
+  <figcaption>Linear-probe accuracy against pretraining cost. I-JEPA reaches higher accuracy while using less compute than the other methods shown. Figure from <a href="https://arxiv.org/abs/2301.08243" target="_blank" rel="noopener">I-JEPA</a> (Assran et al., 2023).</figcaption>
+</figure>
+<p>It beats MAE (77.2% with a ViT-H/14 after 1600 epochs) at a fraction of the compute, and matches iBOT (81.0% with a ViT-L/16) only at the higher resolution. The claim is not state of the art; it is competitive performance without hand-crafted views.</p>
+<p>Where skipping augmentations pays off is low-level tasks: counting objects and estimating depth. One likely reason is that crop-and-resize teaches a model to ignore scale, and scale is exactly what depth depends on:</p>
+<div class="result-table-wrap" role="region" aria-label="Clevr counting and depth results for masking-based and view-invariance methods" tabindex="0">
+<table class="result-table">
+<caption>Clevr accuracy (%) · best in each column in bold</caption>
+<thead><tr><th scope="col">Model</th><th scope="col">Clevr/Count</th><th scope="col">Clevr/Dist</th></tr></thead>
+<tbody>
+<tr class="result-group"><th colspan="3" scope="rowgroup">No hand-crafted views</th></tr>
+<tr><th scope="row"><span class="result-name">I-JEPA</span> <span class="result-arch">ViT-H/14</span></th><td class="is-ours" title="I-JEPA ViT-H/14 · 86.7"><span class="result-num">86.7</span><span class="result-bar"><span style="width: 86.7%"></span></span></td><td class="is-ours is-best" title="I-JEPA ViT-H/14 · 72.4"><span class="result-num">72.4</span><span class="result-bar"><span style="width: 72.4%"></span></span></td></tr>
+<tr><th scope="row"><span class="result-name">MAE</span> <span class="result-arch">ViT-H/14</span></th><td class="is-ref is-best" title="MAE ViT-H/14 · 90.5"><span class="result-num">90.5</span><span class="result-bar"><span style="width: 90.5%"></span></span></td><td class="is-ref is-best" title="MAE ViT-H/14 · 72.4"><span class="result-num">72.4</span><span class="result-bar"><span style="width: 72.4%"></span></span></td></tr>
+<tr><th scope="row"><span class="result-name">data2vec</span> <span class="result-arch">ViT-L/16</span></th><td class="is-ref" title="data2vec ViT-L/16 · 85.3"><span class="result-num">85.3</span><span class="result-bar"><span style="width: 85.3%"></span></span></td><td class="is-ref" title="data2vec ViT-L/16 · 71.3"><span class="result-num">71.3</span><span class="result-bar"><span style="width: 71.3%"></span></span></td></tr>
+<tr class="result-group"><th colspan="3" scope="rowgroup">View-invariance, with augmentations</th></tr>
+<tr><th scope="row"><span class="result-name">iBOT</span> <span class="result-arch">ViT-L/16</span></th><td class="is-ref" title="iBOT ViT-L/16 · 85.7"><span class="result-num">85.7</span><span class="result-bar"><span style="width: 85.7%"></span></span></td><td class="is-ref" title="iBOT ViT-L/16 · 62.8"><span class="result-num">62.8</span><span class="result-bar"><span style="width: 62.8%"></span></span></td></tr>
+<tr><th scope="row"><span class="result-name">DINO</span> <span class="result-arch">ViT-B/8</span></th><td class="is-ref" title="DINO ViT-B/8 · 86.6"><span class="result-num">86.6</span><span class="result-bar"><span style="width: 86.6%"></span></span></td><td class="is-ref" title="DINO ViT-B/8 · 53.4"><span class="result-num">53.4</span><span class="result-bar"><span style="width: 53.4%"></span></span></td></tr>
+</tbody></table></div>
+<p>On counting, everyone is close. On depth (Clevr/Dist), the methods that never saw hand-crafted views keep the information, while iBOT and DINO fall roughly 10 and 19 points behind.</p>
+<h2 id="where-it-leads"><a class="heading-anchor" href="#where-it-leads" aria-hidden="true">#</a>Where it leads</h2>
+<p>I-JEPA showed that predicting in representation space works for images: no hand-crafted augmentations, no pixel decoder, and strong features at a fraction of the compute.</p>
+<p>One piece is still held together by engineering rather than theory. Nothing in the loss stops both encoders from mapping every image to the same vector. What prevents that collapse is the slow EMA target encoder, together with a few hyperparameters tuned around it.</p>
+<p><a href="../lejepa/">LeJEPA</a> later removed that piece. It drops the EMA teacher and adds <strong>SIGReg</strong>, a regulariser that pushes the embeddings toward an isotropic Gaussian, so collapse is ruled out by the objective itself rather than by the training dynamics.</p>
+<h2 id="summary"><a class="heading-anchor" href="#summary" aria-hidden="true">#</a>Summary</h2>
+<p>I-JEPA turns the JEPA idea into a working image model:</p>
+<div class="summary-grid">
+  <div class="summary-card">
+    <span class="summary-num">1</span>
+    <span class="summary-eyebrow">What it predicts</span>
+    <span class="summary-title">Representations, not pixels</span>
+    <span class="summary-text">66.9% against 40.7% when predicting pixels, even with fewer training epochs.</span>
+  </div>
+  <div class="summary-card">
+    <span class="summary-num">2</span>
+    <span class="summary-eyebrow">What makes it work</span>
+    <span class="summary-title">Multi-block masking</span>
+    <span class="summary-text">Four large target blocks and a context covering most of the image.</span>
+  </div>
+  <div class="summary-card">
+    <span class="summary-num">3</span>
+    <span class="summary-eyebrow">What it drops</span>
+    <span class="summary-title">Hand-crafted augmentations</span>
+    <span class="summary-text">No crops or colour jitter, so low-level information like depth is kept.</span>
+  </div>
+  <div class="summary-card">
+    <span class="summary-num">4</span>
+    <span class="summary-eyebrow">What it gives</span>
+    <span class="summary-title">Strong features, cheaply</span>
+    <span class="summary-text">79.3% linear probe with a ViT-H/14 trained in under 72 hours on 16 GPUs.</span>
+  </div>
+</div>
+            </div>
+          </article>
+
+          <footer class="post-footer">
+            <p>
+              Written by Gagik Navasardyan.
+              <a href="mailto:gagiknavasard@gmail.com">Send a reply</a>.
+            </p>
+            <a class="back-link" href="../../writing/">
+              <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+              all posts
+            </a>
+          </footer>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2026 Gagik Navasardyan</p>
+    </div>
+  </footer>
+</body>
+</html>

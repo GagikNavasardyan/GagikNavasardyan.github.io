@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>stable-worldmodel: A Platform for Reproducible World Modeling Research and Evaluation · Gagik Navasardyan</title>
+  <meta name="description" content="A practical guide to stable-worldmodel, the shared platform for training and evaluating world models, with each main environment&#x27;s task, observations, actions and success criterion.">
+  <meta name="theme-color" content="#FFFFFF">
+  <link rel="canonical" href="https://gagiknavasardyan.github.io/writing/stable-worldmodel/">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="stable-worldmodel: A Platform for Reproducible World Modeling Research and Evaluation">
+  <meta property="og:description" content="A practical guide to stable-worldmodel, the shared platform for training and evaluating world models, with each main environment&#x27;s task, observations, actions and success criterion.">
+  <meta property="og:image" content="https://gagiknavasardyan.github.io/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Gagik Navasardyan · MSc in Artificial Intelligence, UB · UPC · URV, Barcelona.">
+  <meta property="og:url" content="https://gagiknavasardyan.github.io/writing/stable-worldmodel/">
+  <meta property="article:published_time" content="2026-10-06">
+  <meta property="article:author" content="Gagik Navasardyan">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+  <script src="../../theme.js"></script>
+  <script src="../../transitions.js"></script>
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../../blog.css">
+  <script src="../../blog.js" defer></script>
+
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "stable-worldmodel: A Platform for Reproducible World Modeling Research and Evaluation",
+    "datePublished": "2026-10-06",
+    "author": { "@type": "Person", "name": "Gagik Navasardyan" },
+    "url": "https://gagiknavasardyan.github.io/writing/stable-worldmodel/"
+  }
+  </script>
+</head>
+<body class="blog">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <nav class="nav container" aria-label="Main">
+      <a class="nav-logo" href="../../index.html" aria-label="Back to the portfolio">GN</a>
+      <ul class="nav-menu" id="nav-menu">
+        <li><a class="nav-writing active" href="../../writing/"><span class="nav-writing-dot" aria-hidden="true"></span>Blog</a></li>
+      </ul>
+      <div class="nav-actions">
+          <button class="theme-toggle" type="button" aria-pressed="false" aria-label="Switch to dark theme" title="Toggle theme">
+            <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+            <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+          </button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main" class="blog-main">
+    <div class="container">
+
+      <div class="window window-post">
+        <div class="window-bar" aria-hidden="true">
+          <span class="term-dot term-dot-r"></span>
+          <span class="term-dot term-dot-y"></span>
+          <span class="term-dot term-dot-g"></span>
+          <span class="window-title">stable-worldmodel: A Platform for Reproducible World Modeling Research and Evaluation</span>
+        </div>
+        <div class="window-body">
+          
+          <a class="back-link" href="../../writing/">
+            <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+            blog
+          </a>
+
+          
+
+          <article class="post">
+            <header class="post-header">
+              <h1>stable-worldmodel: A Platform for Reproducible World Modeling Research and Evaluation</h1>
+              <p class="post-byline">
+                <time datetime="2026-05-20">paper · May 20, 2026</time>
+                
+                · 16 min read
+                
+              </p>
+            </header>
+
+            <div class="prose">
+<p><a href="https://arxiv.org/abs/2605.21800" target="_blank" rel="noopener">stable-worldmodel</a> is an open-source platform for world-model research: one library to collect data, train a world model, and evaluate it by planning, across about 150 environments, over 100 of which are Atari games. Its main idea is <strong>factors of variation</strong>: colours, lighting, shapes, masses and dynamics that can be changed one at a time. They make it possible to study a world model under controlled changes: how well it generalises, how robust it is, or how it copes when the environment shifts over time.</p>
+<figure>
+  <img src="../../assets/posts/stable-worldmodel/environment-families.png" alt="Five groups of environment thumbnails: (a) classic control, such as Push-T, CartPole, MountainCar and Two-Room; (b) MuJoCo bodies such as the humanoid, cheetah and walker; (c) Atari arcade games; (d) robotics, with OGBench robot arms and Fetch; (e) the open-world game Craftax. The top row shows the default look of each environment, the bottom row the same environments with their visual factors of variation changed: colours, textures and occluding squares." width="2177" height="974" loading="lazy" decoding="async">
+  <figcaption>Environment families supported by swm. Figure from <a href="https://arxiv.org/abs/2605.21800" target="_blank" rel="noopener">stable-worldmodel</a> (2026).</figcaption>
+</figure>
+<p>This post is a practical reference for anyone looking for a benchmark to test a new world model. It covers the main environment families: what each task is, what the model sees and does, and what counts as success.</p>
+<h2 id="how-it-works"><a class="heading-anchor" href="#how-it-works" aria-hidden="true">#</a>How it works</h2>
+<figure>
+  <img src="../../assets/posts/stable-worldmodel/swm.png" alt="The stable-worldmodel loop. A World of about 150 environments is used to collect a dataset in Lance, HDF5, MP4 or LeRobot format; the dataset trains a world model from the provided baselines (DINO-WM, IVL, IQL, LeWM, GCBC, PLDM); a solver (CEM, iCEM, MPPI, PS, GD, Adam) sends actions to the world model, which assigns them a cost, and the chosen action goes back to the World." width="875" height="740" loading="lazy" decoding="async">
+  <figcaption>Overview of stable-worldmodel. Figure from <a href="https://arxiv.org/abs/2605.21800" target="_blank" rel="noopener">stable-worldmodel</a> (2026).</figcaption>
+</figure>
+<p>The figure shows the full loop:</p>
+<ol class="prose-list"><li><strong>Collect.</strong> A <strong>World</strong> wraps an environment, runs many copies in parallel and records trajectories into a <strong>dataset</strong> (Lance, HDF5, MP4 or LeRobot).</li><li><strong>Train.</strong> The dataset trains a <strong>world model</strong>: your own, or one of the provided baselines (DINO-WM, LeWM, PLDM, and the goal-conditioned methods GCBC, IQL and IVL).</li><li><strong>Plan.</strong> At test time a <strong>solver</strong> proposes actions, the world model assigns each a cost, and the solver refines them. The chosen action goes to the World, which sends back new information, and the loop repeats.</li></ol>
+<p>To get started: a minimal example, the data formats, the ready-made baselines, and the solvers that do the planning.</p>
+<div class="cfyb-block cfyb-row cfyb-card cfyb-code" data-label="Quickstart — install, collect, train, plan"><div class="cfyb-block-body">
+<div class="code-block" data-lang="bash"><pre><code>pip<span class="w"> </span>install<span class="w"> </span><span class="s1">'stable-worldmodel[all]'</span><span class="w">   </span><span class="c1"># training, environments and data</span>
+</code></pre></div>
+<blockquote><p><strong>Note:</strong> this differs slightly from the quickstart in their <a href="https://github.com/galilai-group/stable-worldmodel" target="_blank" rel="noopener">GitHub README</a>. I ran it and fixed two issues: <code>World</code> needs an <code>image_shape</code>, and <code>collect</code> and <code>load_dataset</code> resolve relative paths differently, so both now use the same absolute path.</p></blockquote>
+<div class="code-block" data-lang="python"><pre><code><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">stable_worldmodel</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">swm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">stable_worldmodel.policy</span><span class="w"> </span><span class="kn">import</span> <span class="n">WorldModelPolicy</span><span class="p">,</span> <span class="n">PlanConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">stable_worldmodel.planning</span><span class="w"> </span><span class="kn">import</span> <span class="n">CEMSolver</span>
+
+<span class="c1"># 1. Collect a dataset with any policy</span>
+<span class="n">world</span> <span class="o">=</span> <span class="n">swm</span><span class="o">.</span><span class="n">World</span><span class="p">(</span><span class="s2">"swm/PushT-v1"</span><span class="p">,</span> <span class="n">num_envs</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">image_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">))</span>
+<span class="n">world</span><span class="o">.</span><span class="n">set_policy</span><span class="p">(</span><span class="n">your_expert_policy</span><span class="p">)</span>
+<span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"data/pusht_demo.lance"</span><span class="p">)</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span>
+<span class="n">world</span><span class="o">.</span><span class="n">collect</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">episodes</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># 2. Load it for training: windows of 16 consecutive steps</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">swm</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">load_dataset</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">num_steps</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">world_model</span> <span class="o">=</span> <span class="o">...</span>  <span class="c1"># your model</span>
+
+<span class="c1"># 3. Evaluate by planning with model-predictive control</span>
+<span class="n">solver</span> <span class="o">=</span> <span class="n">CEMSolver</span><span class="p">(</span><span class="n">cost</span><span class="o">=</span><span class="n">world_model</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">policy</span> <span class="o">=</span> <span class="n">WorldModelPolicy</span><span class="p">(</span>
+    <span class="n">solver</span><span class="o">=</span><span class="n">solver</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">PlanConfig</span><span class="p">(</span><span class="n">horizon</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">receding_horizon</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">world</span><span class="o">.</span><span class="n">set_policy</span><span class="p">(</span><span class="n">policy</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">episodes</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Success Rate: </span><span class="si">{</span><span class="n">results</span><span class="p">[</span><span class="s1">'success_rate'</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%"</span><span class="p">)</span>
+</code></pre></div>
+</div></div>
+<div class="cfyb-block cfyb-row cfyb-card cfyb-code" data-label="Data formats — Lance, HDF5, folders, video, LeRobot"><div class="cfyb-block-body">
+<div class="table-wrap"><table><thead><tr><th>Format</th><th>Stored as</th><th>Best for</th></tr></thead><tbody><tr><td><code>lance</code> (default)</td><td>a LanceDB table</td><td>fast indexed reads, appending; about 4,800 samples/s locally</td></tr><tr><td><code>hdf5</code></td><td>one <code>.h5</code> file</td><td>a single portable file</td></tr><tr><td><code>folder</code></td><td><code>.npz</code> columns and one JPEG per step</td><td>inspecting data by hand</td></tr><tr><td><code>video</code></td><td><code>.npz</code> columns and one MP4 per episode</td><td>long episodes, compact storage</td></tr><tr><td><code>lance_video</code></td><td>a LanceDB table with one MP4 per episode</td><td>Lance&#x27;s fast reads, video&#x27;s compact storage</td></tr><tr><td><code>lerobot</code></td><td><code>lerobot://&lt;repo_id&gt;</code></td><td>reading LeRobot Hub datasets</td></tr></tbody></table></div>
+<p>Convert between them with <code>swm.data.convert(...)</code>.</p>
+</div></div>
+<div class="cfyb-block cfyb-row cfyb-card cfyb-code" data-label="Baselines — world models and goal-conditioned RL"><div class="cfyb-block-body">
+<p>Ready-made baselines, so new models can be compared on equal terms:</p>
+<ul class="prose-list"><li><strong>Latent world models:</strong> DINO-WM, PLDM, LeWorldModel, TD-MPC2.</li><li><strong>Goal-conditioned RL:</strong> behaviour cloning (GCBC), implicit Q-learning (GCIQL) and implicit V-learning (GCIVL).</li></ul>
+</div></div>
+<div class="cfyb-block cfyb-row cfyb-card cfyb-code" data-label="Solvers — how the planner picks actions"><div class="cfyb-block-body">
+<p>A solver searches for the action sequence whose predicted outcome, under the world model, has the lowest cost, for example the distance to a goal image. There are two families.</p>
+<p><strong>Sampling-based</strong>: try many random action sequences, score them all with the world model, and use the best ones to guide the next round. No gradients are needed.</p>
+<ul class="prose-list"><li><strong>CEM</strong> (cross-entropy method), the default in the quickstart and the one LeWM and DINO-WM use: sample action sequences from a Gaussian, keep the best few, fit a new Gaussian to them, and repeat.</li><li><strong>MPPI</strong>: instead of keeping only the best few, average all the samples, weighting each one by how low its cost is. PLDM uses it.</li><li><strong>iCEM</strong> and <strong>predictive sampling</strong> are variants of these; a <strong>categorical CEM</strong> handles discrete actions.</li></ul>
+<p><strong>Gradient-based</strong>: start from one action sequence and improve it by following the gradient of the cost back through the world model (plain gradient descent, a projected version that keeps actions in range, or Adam). This needs a differentiable world model and can get stuck in a local minimum. A <strong>Lagrangian</strong> solver adds constraints on top.</p>
+<p>In code, planning is wrapped in a <strong>policy</strong>: <code>WorldModelPolicy</code> combines a solver and a world model, so a trained model is evaluated in the World like any other policy. Whatever the solver, the policy executes the first few planned actions, then plans again from the new observation: model-predictive control.</p>
+</div></div>
+<h2 id="the-environments"><a class="heading-anchor" href="#the-environments" aria-hidden="true">#</a>The environments</h2>
+<p>Here are the main benchmarks in the library. For each one there is a description of the task, what the model <strong>observes</strong>, how it <strong>acts</strong>, what counts as reaching the <strong>goal</strong>, and which factors can be varied.</p>
+<div class="cfyb-block cfyb-row cfyb-card cfyb-paper" data-label="Push-T — push a T-block into a target pose"><div class="cfyb-block-body">
+<p>A round agent pushes a T-shaped block until it matches a target position and orientation. The agent can only push, so it has to work around the block, using contact to both move and rotate it. 2D rigid-body physics (Pymunk), control at 10 Hz.</p>
+<div class="io-grid"><div class="io-card io-in"><div class="io-head">Observe</div><div class="io-row"><span class="io-key">Image</span><span class="io-val"><span class="io-item">224 × 224 RGB</span></span></div><div class="io-row"><span class="io-key">Proprio</span><span class="io-val"><span class="io-item">agent position (x, y)</span><span class="io-item">agent velocity (vx, vy)</span></span></div><div class="io-row"><span class="io-key">State</span><span class="io-val"><span class="io-item">agent position (x, y)</span><span class="io-item">block position (x, y)</span><span class="io-item">block angle (θ)</span><span class="io-item">agent velocity (vx, vy)</span></span></div></div><div class="io-card io-act"><div class="io-head">Act</div><div class="io-row"><span class="io-key">Type</span><span class="io-val"><span class="io-item">continuous</span></span></div><div class="io-row"><span class="io-key">Action</span><span class="io-val"><span class="io-item">agent move (ax, ay)</span><span class="io-item">each between −1 and 1</span><span class="io-item">discrete version: one of 16 distances × 16 directions</span></span></div></div><div class="io-card io-goal"><div class="io-head">Goal</div><div class="io-row"><span class="io-key">Given as</span><span class="io-val"><span class="io-item">an image of the target pose</span></span></div><div class="io-row"><span class="io-key">Success</span><span class="io-val"><span class="io-item">block within 20 px and 20° of the target</span></span></div></div></div>
+<div class="io-meta"><div class="io-row"><span class="io-key">ID</span><span class="io-val"><span class="io-item"><code>swm/PushT-v1</code></span><span class="io-item"><code>swm/PushT-Discrete-v1</code> (discrete actions)</span></span></div><div class="io-row"><span class="io-key">Varies</span><span class="io-val"><span class="io-item"><strong>Agent</strong>: colour, size, shape (8 shapes), angle, start position, velocity</span><span class="io-item"><strong>Block</strong>: colour, size, shape, angle, start position</span><span class="io-item"><strong>Goal</strong>: colour, size, angle, position</span><span class="io-item"><strong>Background</strong>: colour</span><span class="io-item"><strong>Rendering</strong>: goal shown or hidden</span><span class="io-item io-total">17 factors in total</span></span></div></div>
+<figure>
+  <img src="../../assets/posts/stable-worldmodel/pusht.gif" alt="An animation of Push-T: a blue round agent pushes a grey T-shaped block until it lines up with the green target T." width="224" height="224" loading="lazy" decoding="async">
+  <figcaption>Push-T: pushing the T onto its target. Animation from the <a href="https://github.com/galilai-group/stable-worldmodel" target="_blank" rel="noopener">swm docs</a>.</figcaption>
+</figure>
+</div></div>
+<div class="cfyb-block cfyb-row cfyb-card cfyb-paper" data-label="Two-Room — navigate through a door to the other room"><div class="cfyb-block-body">
+<p>A point agent must reach a target in the other room. The two rooms are separated by a wall with one to three doors, so the agent has to find a door and plan its route through it. 2D movement, with collisions against the walls only.</p>
+<div class="io-grid"><div class="io-card io-in"><div class="io-head">Observe</div><div class="io-row"><span class="io-key">Image</span><span class="io-val"><span class="io-item">224 × 224 RGB</span></span></div><div class="io-row"><span class="io-key">State</span><span class="io-val"><span class="io-item">agent position (x, y)</span><span class="io-item">target position (x, y)</span><span class="io-item">door centres (x, y), up to 3</span><span class="io-item">all in pixels, 0 to 224</span></span></div></div><div class="io-card io-act"><div class="io-head">Act</div><div class="io-row"><span class="io-key">Type</span><span class="io-val"><span class="io-item">continuous</span></span></div><div class="io-row"><span class="io-key">Action</span><span class="io-val"><span class="io-item">move direction (ax, ay)</span><span class="io-item">each between −1 and 1</span></span></div></div><div class="io-card io-goal"><div class="io-head">Goal</div><div class="io-row"><span class="io-key">Given as</span><span class="io-val"><span class="io-item">the target position</span></span></div><div class="io-row"><span class="io-key">Success</span><span class="io-val"><span class="io-item">agent within 16 px of the target</span></span></div></div></div>
+<div class="io-meta"><div class="io-row"><span class="io-key">ID</span><span class="io-val"><span class="io-item"><code>swm/TwoRoom-v1</code></span></span></div><div class="io-row"><span class="io-key">Varies</span><span class="io-val"><span class="io-item"><strong>Agent</strong>: colour, size, position, speed</span><span class="io-item"><strong>Target</strong>: colour, size, position</span><span class="io-item"><strong>Wall</strong>: colour, border colour, thickness, orientation</span><span class="io-item"><strong>Doors</strong>: number (1 to 3), colour, size, position</span><span class="io-item"><strong>Background</strong>: colour</span><span class="io-item"><strong>Task</strong>: minimum episode length</span><span class="io-item io-total">17 factors in total</span></span></div></div>
+<figure>
+  <img src="../../assets/posts/stable-worldmodel/tworoom.gif" alt="An animation of Two-Room: a red agent moves from one room, through the gap in the dividing wall, to a green target in the other room." width="224" height="224" loading="lazy" decoding="async">
+  <figcaption>Two-Room: reaching the target through the door. Animation from the <a href="https://github.com/galilai-group/stable-worldmodel" target="_blank" rel="noopener">swm docs</a>.</figcaption>
+</figure>
+</div></div>
+<div class="cfyb-block cfyb-row cfyb-card cfyb-paper" data-label="Piecewise — reach a target in a room whose zones push the agent"><div class="cfyb-block-body">
+<p>A point agent must reach a target in a single open room, bounded only by its outer walls. The room is split into a grid of zones (2 × 2 by default), and each zone has its own fixed push. So the same action can move the agent faster, slower or off to the side, depending on the zone it is in, and the world model has to learn dynamics that change with position. The push is a 2D offset of up to 4 px per step along each axis, added to every move the agent makes inside the zone.</p>
+<div class="io-grid"><div class="io-card io-in"><div class="io-head">Observe</div><div class="io-row"><span class="io-key">Image</span><span class="io-val"><span class="io-item">224 × 224 RGB</span></span></div><div class="io-row"><span class="io-key">State</span><span class="io-val"><span class="io-item">agent position (x, y)</span><span class="io-item">target position (x, y)</span><span class="io-item">all in pixels, 0 to 224</span></span></div></div><div class="io-card io-act"><div class="io-head">Act</div><div class="io-row"><span class="io-key">Type</span><span class="io-val"><span class="io-item">continuous</span></span></div><div class="io-row"><span class="io-key">Action</span><span class="io-val"><span class="io-item">move direction (ax, ay)</span><span class="io-item">each between −1 and 1</span></span></div></div><div class="io-card io-goal"><div class="io-head">Goal</div><div class="io-row"><span class="io-key">Given as</span><span class="io-val"><span class="io-item">the target position</span></span></div><div class="io-row"><span class="io-key">Success</span><span class="io-val"><span class="io-item">agent within 16 px of the target</span></span></div></div></div>
+<div class="io-meta"><div class="io-row"><span class="io-key">ID</span><span class="io-val"><span class="io-item"><code>swm/Piecewise-v0</code></span><span class="io-item"><code>grid_n</code>: zones per side (default 2)</span></span></div><div class="io-row"><span class="io-key">Varies</span><span class="io-val"><span class="io-item"><strong>Agent</strong>: colour, size, position, speed</span><span class="io-item"><strong>Target</strong>: colour, size, position</span><span class="io-item"><strong>Room</strong>: background colour, border colour</span><span class="io-item"><strong>Zones</strong>: each zone's push and colour</span><span class="io-item"><strong>Task</strong>: minimum episode length</span><span class="io-item"><strong>Rendering</strong>: target, zone colours and push arrows shown or hidden</span><span class="io-item io-total">21 factors in total, with 2 × 2 zones</span></span></div></div>
+<figure>
+  <img src="../../assets/posts/stable-worldmodel/piecewise.gif" alt="An animation of Piecewise: a room split into four pastel-coloured zones, where a red agent moves across the zones to a green target, three times from different starting points." width="224" height="224" loading="lazy" decoding="async">
+  <figcaption>Piecewise: reaching the target across zones. Recorded with <a href="https://github.com/galilai-group/stable-worldmodel" target="_blank" rel="noopener">swm</a>.</figcaption>
+</figure>
+</div></div>
+<div class="cfyb-block cfyb-row cfyb-card cfyb-paper" data-label="OGBench Cube — 5 versions, 1 to 8 cubes moved to target poses by a robot arm"><div class="cfyb-block-body">
+<p>A robot arm picks, places, swaps and stacks cubes to reach a target arrangement. Comes in five sizes, from 1 to 8 cubes, each with five evaluation tasks of growing difficulty. A standard 3D manipulation test for world models.</p>
+<div class="io-grid"><div class="io-card io-in"><div class="io-head">Observe</div><div class="io-row"><span class="io-key">Image</span><span class="io-val"><span class="io-item">224 × 224 RGB</span><span class="io-item">optional multi-view</span></span></div><div class="io-row"><span class="io-key">State</span><span class="io-val"><span class="io-item">arm joint angles<br>(q₁ … q₆)</span><span class="io-item">arm joint velocities<br>(q̇₁ … q̇₆)</span><span class="io-item">end-effector position<br>(x, y, z)</span><span class="io-item">end-effector yaw<br>(cos ψ, sin ψ)</span><span class="io-item">gripper opening</span><span class="io-item">gripper contact</span><span class="io-item">for each cube:</span><span class="io-item io-sub">position (x, y, z)</span><span class="io-item io-sub">rotation (quaternion)</span><span class="io-item io-sub">yaw (cos, sin)</span></span></div></div><div class="io-card io-act"><div class="io-head">Act</div><div class="io-row"><span class="io-key">Type</span><span class="io-val"><span class="io-item">continuous</span></span></div><div class="io-row"><span class="io-key">Action</span><span class="io-val"><span class="io-item">end-effector move<br>(dx, dy, dz)</span><span class="io-item">yaw change (dψ)</span><span class="io-item">gripper open/close (g)</span><span class="io-item">each between −1 and 1</span></span></div></div><div class="io-card io-goal"><div class="io-head">Goal</div><div class="io-row"><span class="io-key">Given as</span><span class="io-val"><span class="io-item">a target position<br>for each cube</span></span></div><div class="io-row"><span class="io-key">Success</span><span class="io-val"><span class="io-item">every cube within 4 cm<br>of its target</span></span></div></div></div>
+<div class="io-meta"><div class="io-row"><span class="io-key">ID</span><span class="io-val"><span class="io-item"><code>swm/OGBCube-v0</code></span><span class="io-item"><code>env_type</code>: single, double, triple, quadruple or octuple</span></span></div><div class="io-row"><span class="io-key">Varies</span><span class="io-val"><span class="io-item"><strong>Cube</strong>: colour, size, start pose, goal pose</span><span class="io-item"><strong>Arm</strong>: colour, start position</span><span class="io-item"><strong>Floor</strong>: colours</span><span class="io-item"><strong>Camera</strong>: angle</span><span class="io-item"><strong>Light</strong>: intensity</span><span class="io-item io-total">11 factors in total</span></span></div></div>
+<figure>
+  <img src="../../assets/posts/stable-worldmodel/ogb-cube.gif" alt="An animation of OGBench Cube: a robot arm picks up a red cube and places it at a new spot on the table." width="224" height="224" loading="lazy" decoding="async">
+  <figcaption>OGBench Cube: picking and placing a cube. Animation from the <a href="https://github.com/galilai-group/stable-worldmodel" target="_blank" rel="noopener">swm docs</a>.</figcaption>
+</figure>
+</div></div>
+<div class="cfyb-block cfyb-row cfyb-card cfyb-paper" data-label="OGBench Scene — drawer, window, locks and a cube"><div class="cfyb-block-body">
+<p>A robot arm works in a scene with a cube, a drawer, a window, and two buttons that lock and unlock the drawer and the window. Tasks need several steps in the right order, such as unlocking the drawer before opening it. Five tasks: open, unlock and lock, rearrange (medium), put the cube in the drawer, rearrange (hard).</p>
+<div class="io-grid"><div class="io-card io-in"><div class="io-head">Observe</div><div class="io-row"><span class="io-key">Image</span><span class="io-val"><span class="io-item">224 × 224 RGB</span><span class="io-item">front or side camera</span></span></div><div class="io-row"><span class="io-key">State</span><span class="io-val"><span class="io-item">arm joint angles<br>(q₁ … q₆)</span><span class="io-item">arm joint velocities<br>(q̇₁ … q̇₆)</span><span class="io-item">end-effector position<br>(x, y, z)</span><span class="io-item">end-effector yaw<br>(cos ψ, sin ψ)</span><span class="io-item">gripper opening</span><span class="io-item">gripper contact</span><span class="io-item">cube position,<br>rotation and yaw</span><span class="io-item">2 button states<br>(locked or not)</span><span class="io-item">drawer position<br>and velocity</span><span class="io-item">window position<br>and velocity</span></span></div></div><div class="io-card io-act"><div class="io-head">Act</div><div class="io-row"><span class="io-key">Type</span><span class="io-val"><span class="io-item">continuous</span></span></div><div class="io-row"><span class="io-key">Action</span><span class="io-val"><span class="io-item">end-effector move<br>(dx, dy, dz)</span><span class="io-item">yaw change (dψ)</span><span class="io-item">gripper open/close (g)</span><span class="io-item">each between −1 and 1</span></span></div></div><div class="io-card io-goal"><div class="io-head">Goal</div><div class="io-row"><span class="io-key">Given as</span><span class="io-val"><span class="io-item">target states<br>of all objects</span></span></div><div class="io-row"><span class="io-key">Success</span><span class="io-val"><span class="io-item">cube, drawer and window<br>within 0.04 of targets</span><span class="io-item">both buttons in their<br>target state</span></span></div></div></div>
+<div class="io-meta"><div class="io-row"><span class="io-key">ID</span><span class="io-val"><span class="io-item"><code>swm/OGBScene-v0</code></span></span></div><div class="io-row"><span class="io-key">Varies</span><span class="io-val"><span class="io-item"><strong>Cube</strong>: colour, size, start pose, goal pose</span><span class="io-item"><strong>Locks</strong>: colour</span><span class="io-item"><strong>Arm</strong>: colour, start position</span><span class="io-item"><strong>Floor</strong>: colours</span><span class="io-item"><strong>Camera</strong>: angle</span><span class="io-item"><strong>Light</strong>: intensity</span><span class="io-item io-total">12 factors in total</span></span></div></div>
+<figure>
+  <img src="../../assets/posts/stable-worldmodel/ogb-scene.gif" alt="An animation of OGBench Scene: a robot arm picks up a red cube and puts it into the open drawer, next to a window and two buttons." width="224" height="224" loading="lazy" decoding="async">
+  <figcaption>OGBench Scene: putting the cube in the drawer. Animation from the <a href="https://github.com/galilai-group/stable-worldmodel" target="_blank" rel="noopener">swm docs</a>.</figcaption>
+</figure>
+</div></div>
+<div class="cfyb-block cfyb-row cfyb-card cfyb-paper" data-label="OGBench Maze — 5 maze layouts, navigated as a point, an ant or a humanoid"><div class="cfyb-block-body">
+<p>Locomotion through mazes of different layouts (arena, medium, large, giant, teleport), with a choice of body: a point mass, an ant, or a humanoid. A variant asks the agent to push a ball to the goal instead.</p>
+<div class="io-grid"><div class="io-card io-in"><div class="io-head">Observe</div><div class="io-row"><span class="io-key">Image</span><span class="io-val"><span class="io-item">224 × 224 RGB</span><span class="io-item">states by default</span></span></div></div><div class="io-card io-act"><div class="io-head">Act</div><div class="io-row"><span class="io-key">Type</span><span class="io-val"><span class="io-item">continuous</span></span></div><div class="io-row"><span class="io-key">Action</span><span class="io-val"><span class="io-item">point mass:<br>force (ax, ay)</span><span class="io-item">ant: 8 joint torques</span><span class="io-item">humanoid:<br>21 joint torques</span></span></div></div><div class="io-card io-goal"><div class="io-head">Goal</div><div class="io-row"><span class="io-key">Given as</span><span class="io-val"><span class="io-item">a target location<br>(x, y) in the maze</span></span></div><div class="io-row"><span class="io-key">Success</span><span class="io-val"><span class="io-item">within 1.0 (point)<br>or 0.5 (ant, humanoid)<br>of the goal</span></span></div></div></div>
+<div class="io-meta"><div class="io-row"><span class="io-key">ID</span><span class="io-val"><span class="io-item"><code>swm/OGBMaze-v0</code></span><span class="io-item"><code>maze_type</code>: arena, medium, large, giant or teleport</span><span class="io-item"><code>loco_env_type</code>: point, ant or humanoid</span><span class="io-item"><code>maze_env_type</code>: maze (navigate) or ball (push a ball to the goal)</span></span></div><div class="io-row"><span class="io-key">Varies</span><span class="io-val"><span class="io-item"><strong>Agent</strong>: colour</span><span class="io-item"><strong>Walls</strong>: colour</span><span class="io-item"><strong>Floor</strong>: checker colours, position gradient on or off</span><span class="io-item"><strong>Light</strong>: intensity</span><span class="io-item io-total">5 factors in total</span></span></div></div>
+</div></div>
+<div class="cfyb-block cfyb-row cfyb-card cfyb-paper" data-label="DeepMind Control — 12 classic continuous-control bodies"><div class="cfyb-block-body">
+<p>The standard MuJoCo control suite, rendered from pixels. Each body comes with its own set of tasks: running, hopping, balancing, reaching… Actions are repeated for 2 simulation steps.</p>
+<div class="io-grid"><div class="io-card io-in"><div class="io-head">Observe</div><div class="io-row"><span class="io-key">Image</span><span class="io-val"><span class="io-item">224 × 224 RGB</span></span></div><div class="io-row"><span class="io-key">State</span><span class="io-val"><span class="io-item">joint positions<br>and velocities</span><span class="io-item">task-specific readings</span><span class="io-item">flattened into<br>one vector</span></span></div></div><div class="io-card io-act"><div class="io-head">Act</div><div class="io-row"><span class="io-key">Type</span><span class="io-val"><span class="io-item">continuous</span></span></div><div class="io-row"><span class="io-key">Action</span><span class="io-val"><span class="io-item">one torque per<br>actuated joint</span><span class="io-item">each between −1 and 1</span><span class="io-item">count per body below</span></span></div></div><div class="io-card io-goal"><div class="io-head">Goal</div><div class="io-row"><span class="io-key">Given as</span><span class="io-val"><span class="io-item">the task's own<br>objective</span><span class="io-item">run, hop, balance,<br>reach…</span></span></div></div></div>
+<div class="io-meta"><div class="io-row"><span class="io-key">ID</span><span class="io-val"><span class="io-item"><code>swm/&lt;Body&gt;DMControl-v0</code></span><span class="io-item">for example <code>swm/CheetahDMControl-v0</code></span><span class="io-item"><code>task</code>: several per body (hopper: stand, hop, flip, and their backward versions)</span></span></div><div class="io-row"><span class="io-key">Varies</span><span class="io-val"><span class="io-item"><strong>Visual</strong>: body and floor colours, lighting</span><span class="io-item"><strong>Physical</strong>: body densities, locked joints, friction, gravity</span><span class="io-item io-total">6 to 10 factors in total, depending on the body</span></span></div></div>
+<div class="table-wrap"><table><thead><tr><th>Body</th><th>Torques</th></tr></thead><tbody><tr><td>Cartpole, Pendulum, Acrobot</td><td>1</td></tr><tr><td>Reacher, Ball in cup, Finger</td><td>2</td></tr><tr><td>Hopper</td><td>4</td></tr><tr><td>Manipulator</td><td>5</td></tr><tr><td>Cheetah, Walker</td><td>6</td></tr><tr><td>Quadruped</td><td>12</td></tr><tr><td>Humanoid</td><td>21</td></tr></tbody></table></div>
+<figure>
+  <img src="../../assets/posts/stable-worldmodel/dmc.webp" alt="A three by three grid of animated DeepMind Control bodies: cheetah running, walker, hopper, quadruped, reacher arm, finger spinning a body, ball in cup, cartpole and pendulum." width="516" height="516" loading="lazy" decoding="async">
+  <figcaption>Nine of the DeepMind Control bodies. Animation from the <a href="https://github.com/galilai-group/stable-worldmodel" target="_blank" rel="noopener">swm docs</a>.</figcaption>
+</figure>
+</div></div>
+<div class="cfyb-block cfyb-row cfyb-card cfyb-paper" data-label="Classic control — 5 environments: CartPole, MountainCar, Acrobot, Pendulum, point maze"><div class="cfyb-block-body">
+<p>Five small control problems, each rendered as an image and extended with factors of variation.</p>
+<div class="cfyb-block cfyb-row" data-label="CartPole — keep a pole upright on a moving cart"><div class="cfyb-block-body">
+<p>A pole is hinged on a cart that moves along a track. By pushing the cart left or right, the agent keeps the pole upright.</p>
+<div class="io-grid"><div class="io-card io-in"><div class="io-head">Observe</div><div class="io-row"><span class="io-key">Image</span><span class="io-val"><span class="io-item">600 × 400 RGB render</span></span></div><div class="io-row"><span class="io-key">State</span><span class="io-val"><span class="io-item">cart position</span><span class="io-item">cart velocity</span><span class="io-item">pole angle</span><span class="io-item">pole angular velocity</span></span></div></div><div class="io-card io-act"><div class="io-head">Act</div><div class="io-row"><span class="io-key">Type</span><span class="io-val"><span class="io-item">discrete</span></span></div><div class="io-row"><span class="io-key">Action</span><span class="io-val"><span class="io-item">push left or right</span></span></div></div><div class="io-card io-goal"><div class="io-head">Goal</div><div class="io-row"><span class="io-key">Given as</span><span class="io-val"><span class="io-item">keep the pole upright</span></span></div><div class="io-row"><span class="io-key">Success</span><span class="io-val"><span class="io-item">pole within 12°<br>of upright</span><span class="io-item">cart within 2.4<br>of the centre</span><span class="io-item">for up to 500 steps</span></span></div></div></div>
+<div class="io-meta"><div class="io-row"><span class="io-key">ID</span><span class="io-val"><span class="io-item"><code>swm/CartPoleControl-v1</code></span></span></div><div class="io-row"><span class="io-key">Varies</span><span class="io-val"><span class="io-item"><strong>Physics</strong>: gravity, cart mass, pole mass, pole length, push force, time step</span><span class="io-item"><strong>Colours</strong>: background, cart, pole, axle</span><span class="io-item io-total">10 factors in total</span></span></div></div>
+<figure class="fig-small">
+  <img src="../../assets/posts/stable-worldmodel/classic-cartpole.png" alt="The CartPole environment: a tan pole hinged on a black cart standing on a track." width="248" height="248" loading="lazy" decoding="async">
+  <figcaption>CartPole: the pole on its cart. Rendered with <a href="https://github.com/galilai-group/stable-worldmodel" target="_blank" rel="noopener">swm</a>.</figcaption>
+</figure>
+</div></div>
+<div class="cfyb-block cfyb-row" data-label="MountainCar — rock a car up a hill to the flag"><div class="cfyb-block-body">
+<p>A car sits in a valley between two hills, and its engine is too weak to drive straight up. It has to rock back and forth to build momentum and reach the flag on the right hill.</p>
+<div class="io-grid"><div class="io-card io-in"><div class="io-head">Observe</div><div class="io-row"><span class="io-key">Image</span><span class="io-val"><span class="io-item">600 × 400 RGB render</span></span></div><div class="io-row"><span class="io-key">State</span><span class="io-val"><span class="io-item">car position</span><span class="io-item">car velocity</span></span></div></div><div class="io-card io-act"><div class="io-head">Act</div><div class="io-row"><span class="io-key">Type</span><span class="io-val"><span class="io-item">discrete or continuous</span></span></div><div class="io-row"><span class="io-key">Action</span><span class="io-val"><span class="io-item">discrete: push left,<br>none or right</span><span class="io-item">continuous: force<br>between −1 and 1</span></span></div></div><div class="io-card io-goal"><div class="io-head">Goal</div><div class="io-row"><span class="io-key">Given as</span><span class="io-val"><span class="io-item">reach the flag</span></span></div><div class="io-row"><span class="io-key">Success</span><span class="io-val"><span class="io-item">car position ≥ 0.5<br>(0.45 continuous)</span><span class="io-item">within 200 steps<br>(999 continuous)</span></span></div></div></div>
+<div class="io-meta"><div class="io-row"><span class="io-key">ID</span><span class="io-val"><span class="io-item"><code>swm/MountainCarControl-v0</code> (discrete)</span><span class="io-item"><code>swm/MountainCarContinuousControl-v0</code> (continuous)</span></span></div><div class="io-row"><span class="io-key">Varies</span><span class="io-val"><span class="io-item"><strong>Physics</strong>: gravity, push force and maximum speed (discrete); engine power and maximum speed (continuous)</span><span class="io-item"><strong>Colours</strong>: background, foreground</span><span class="io-item io-total">5 factors in total (discrete), 4 (continuous)</span></span></div></div>
+<figure class="fig-small">
+  <img src="../../assets/posts/stable-worldmodel/classic-mountaincar.png" alt="The MountainCar environment: a small car at the bottom of a valley between two hills, with a yellow flag on top of the right hill." width="248" height="248" loading="lazy" decoding="async">
+  <figcaption>MountainCar: the car in the valley, the flag on the right. Rendered with <a href="https://github.com/galilai-group/stable-worldmodel" target="_blank" rel="noopener">swm</a>.</figcaption>
+</figure>
+</div></div>
+<div class="cfyb-block cfyb-row" data-label="Acrobot — swing a two-link arm above a line"><div class="cfyb-block-body">
+<p>Two links hang from a fixed pivot, and only the joint between them is driven. The agent swings the arm until its tip rises above a line.</p>
+<div class="io-grid"><div class="io-card io-in"><div class="io-head">Observe</div><div class="io-row"><span class="io-key">Image</span><span class="io-val"><span class="io-item">500 × 500 RGB render</span></span></div><div class="io-row"><span class="io-key">State</span><span class="io-val"><span class="io-item">cos and sin of<br>both joint angles</span><span class="io-item">both joint velocities</span></span></div></div><div class="io-card io-act"><div class="io-head">Act</div><div class="io-row"><span class="io-key">Type</span><span class="io-val"><span class="io-item">discrete</span></span></div><div class="io-row"><span class="io-key">Action</span><span class="io-val"><span class="io-item">torque −1, 0 or +1<br>on the middle joint</span></span></div></div><div class="io-card io-goal"><div class="io-head">Goal</div><div class="io-row"><span class="io-key">Given as</span><span class="io-val"><span class="io-item">raise the tip<br>above the line</span></span></div><div class="io-row"><span class="io-key">Success</span><span class="io-val"><span class="io-item">tip above the line</span><span class="io-item">within 500 steps</span></span></div></div></div>
+<div class="io-meta"><div class="io-row"><span class="io-key">ID</span><span class="io-val"><span class="io-item"><code>swm/AcrobotControl-v1</code></span></span></div><div class="io-row"><span class="io-key">Varies</span><span class="io-val"><span class="io-item"><strong>Physics</strong>: link lengths, link masses, centres of mass, moment of inertia</span><span class="io-item"><strong>Colours</strong>: background, line, links, joints</span><span class="io-item io-total">11 factors in total</span></span></div></div>
+<figure class="fig-small">
+  <img src="../../assets/posts/stable-worldmodel/classic-acrobot.png" alt="The Acrobot environment: a two-link cyan arm hanging from a pivot, with a horizontal line above it." width="248" height="248" loading="lazy" decoding="async">
+  <figcaption>Acrobot: the two-link arm below the line. Rendered with <a href="https://github.com/galilai-group/stable-worldmodel" target="_blank" rel="noopener">swm</a>.</figcaption>
+</figure>
+</div></div>
+<div class="cfyb-block cfyb-row" data-label="Pendulum — swing a pendulum up and balance it"><div class="cfyb-block-body">
+<p>A pendulum hangs from a pivot. The agent applies torque to swing it up and keep it balanced upright.</p>
+<div class="io-grid"><div class="io-card io-in"><div class="io-head">Observe</div><div class="io-row"><span class="io-key">Image</span><span class="io-val"><span class="io-item">500 × 500 RGB render</span></span></div><div class="io-row"><span class="io-key">State</span><span class="io-val"><span class="io-item">cos θ, sin θ</span><span class="io-item">angular velocity</span></span></div></div><div class="io-card io-act"><div class="io-head">Act</div><div class="io-row"><span class="io-key">Type</span><span class="io-val"><span class="io-item">continuous</span></span></div><div class="io-row"><span class="io-key">Action</span><span class="io-val"><span class="io-item">torque between<br>−2 and 2</span></span></div></div><div class="io-card io-goal"><div class="io-head">Goal</div><div class="io-row"><span class="io-key">Given as</span><span class="io-val"><span class="io-item">keep it upright</span></span></div><div class="io-row"><span class="io-key">Success</span><span class="io-val"><span class="io-item">no end state; scored<br>by closeness to upright<br>and torque used</span><span class="io-item">over 200 steps</span></span></div></div></div>
+<div class="io-meta"><div class="io-row"><span class="io-key">ID</span><span class="io-val"><span class="io-item"><code>swm/PendulumControl-v1</code></span></span></div><div class="io-row"><span class="io-key">Varies</span><span class="io-val"><span class="io-item"><strong>Physics</strong>: gravity, mass, length, maximum torque, maximum speed, time step</span><span class="io-item"><strong>Colours</strong>: background, rod, hub</span><span class="io-item io-total">9 factors in total</span></span></div></div>
+<figure class="fig-small">
+  <img src="../../assets/posts/stable-worldmodel/classic-pendulum.png" alt="The Pendulum environment: a red pole swinging around a pivot, with an arrow showing the applied torque." width="248" height="248" loading="lazy" decoding="async">
+  <figcaption>Pendulum: the pole on its pivot. Rendered with <a href="https://github.com/galilai-group/stable-worldmodel" target="_blank" rel="noopener">swm</a>.</figcaption>
+</figure>
+</div></div>
+<div class="cfyb-block cfyb-row" data-label="Point maze — reach a goal around random walls"><div class="cfyb-block-body">
+<p>A point moves inside a 5 × 5 square that holds 4 to 6 random rectangular walls, and has to reach a goal. Moves that would hit a wall are blocked.</p>
+<div class="io-grid"><div class="io-card io-in"><div class="io-head">Observe</div><div class="io-row"><span class="io-key">Image</span><span class="io-val"><span class="io-item">500 × 500 RGB render</span></span></div><div class="io-row"><span class="io-key">State</span><span class="io-val"><span class="io-item">position (x, y)</span><span class="io-item">each between 0 and 5</span></span></div></div><div class="io-card io-act"><div class="io-head">Act</div><div class="io-row"><span class="io-key">Type</span><span class="io-val"><span class="io-item">continuous</span></span></div><div class="io-row"><span class="io-key">Action</span><span class="io-val"><span class="io-item">step (dx, dy)</span><span class="io-item">each between<br>−0.2 and 0.2</span></span></div></div><div class="io-card io-goal"><div class="io-head">Goal</div><div class="io-row"><span class="io-key">Given as</span><span class="io-val"><span class="io-item">the goal position</span></span></div><div class="io-row"><span class="io-key">Success</span><span class="io-val"><span class="io-item">point within the<br>goal radius</span><span class="io-item">(0.2 by default)</span></span></div></div></div>
+<div class="io-meta"><div class="io-row"><span class="io-key">ID</span><span class="io-val"><span class="io-item"><code>swm/SimplePointMaze-v0</code></span></span></div><div class="io-row"><span class="io-key">Varies</span><span class="io-val"><span class="io-item"><strong>Agent</strong>: colour, size, start position, speed</span><span class="io-item"><strong>Goal</strong>: colour, size, position</span><span class="io-item"><strong>Walls</strong>: number, colour, shape, positions</span><span class="io-item"><strong>Background</strong>: colour</span></span></div></div>
+<figure class="fig-small">
+  <img src="../../assets/posts/stable-worldmodel/classic-pointmaze.png" alt="The point maze environment: a red point at the bottom, black rectangular walls, and a green goal in the top right corner." width="248" height="248" loading="lazy" decoding="async">
+  <figcaption>Point maze: the point, the walls and the goal. Rendered with <a href="https://github.com/galilai-group/stable-worldmodel" target="_blank" rel="noopener">swm</a>.</figcaption>
+</figure>
+</div></div>
+</div></div>
+<div class="cfyb-block cfyb-row cfyb-card cfyb-paper" data-label="Fetch — 4 tasks (reach, push, slide, pick-and-place), 3 versions each"><div class="cfyb-block-body">
+<p>A Fetch robot arm moves a block, or just its gripper, to a goal position. Four tasks, each in three versions: sparse reward, dense reward (<code>Dense</code>), and dictionary observations (<code>Dict</code>).</p>
+<div class="io-grid"><div class="io-card io-in"><div class="io-head">Observe</div><div class="io-row"><span class="io-key">Image</span><span class="io-val"><span class="io-item">224 × 224 RGB</span></span></div><div class="io-row"><span class="io-key">State</span><span class="io-val"><span class="io-item">gripper position<br>(x, y, z)</span><span class="io-item">gripper finger positions</span><span class="io-item">gripper velocity</span><span class="io-item">with an object:</span><span class="io-item io-sub">position</span><span class="io-item io-sub">position relative<br>to the gripper</span><span class="io-item io-sub">rotation</span><span class="io-item io-sub">velocities</span><span class="io-item">then the goal (x, y, z)</span></span></div></div><div class="io-card io-act"><div class="io-head">Act</div><div class="io-row"><span class="io-key">Type</span><span class="io-val"><span class="io-item">continuous</span></span></div><div class="io-row"><span class="io-key">Action</span><span class="io-val"><span class="io-item">gripper move<br>(dx, dy, dz)</span><span class="io-item">gripper open/close (g)</span><span class="io-item">each between −1 and 1</span></span></div></div><div class="io-card io-goal"><div class="io-head">Goal</div><div class="io-row"><span class="io-key">Given as</span><span class="io-val"><span class="io-item">a target position<br>(x, y, z)</span></span></div><div class="io-row"><span class="io-key">Success</span><span class="io-val"><span class="io-item">object (or gripper)<br>within 5 cm</span><span class="io-item">50 steps per episode</span></span></div></div></div>
+<div class="io-meta"><div class="io-row"><span class="io-key">ID</span><span class="io-val"><span class="io-item"><code>swm/FetchReach-v3</code></span><span class="io-item"><code>swm/FetchPush-v3</code></span><span class="io-item"><code>swm/FetchSlide-v3</code></span><span class="io-item"><code>swm/FetchPickAndPlace-v3</code></span></span></div><div class="io-row"><span class="io-key">Varies</span><span class="io-val"><span class="io-item"><strong>Scene</strong>: table, object and background colour, light, camera angle</span><span class="io-item"><strong>Positions</strong>: start and goal</span><span class="io-item"><strong>Block</strong>: mass, start position, angle (tasks with a block)</span><span class="io-item"><strong>Rendering</strong>: transparent arm</span><span class="io-item io-total">8 to 11 factors in total, depending on the task</span></span></div></div>
+<figure>
+  <img src="../../assets/posts/stable-worldmodel/fetch.gif" alt="Four animations in a grid of a Fetch robot arm at a table: reaching, pushing a block, sliding a puck and picking and placing a block." width="452" height="452" loading="lazy" decoding="async">
+  <figcaption>Fetch reach, push, slide and pick-and-place. Animation from the <a href="https://github.com/galilai-group/stable-worldmodel" target="_blank" rel="noopener">swm docs</a>.</figcaption>
+</figure>
+</div></div>
+<div class="cfyb-block cfyb-row cfyb-card cfyb-paper" data-label="Craftax — 4 versions of a long-horizon, open-world survival game"><div class="cfyb-block-body">
+<p>A 2D, Minecraft-like world, seen from above. The agent gathers resources, crafts tools, fights creatures and has to eat, drink and sleep to survive. It only sees the area around it. There are two versions: <strong>Classic</strong>, a single overworld map, and <strong>Full</strong>, which adds dungeons on several floors, ranged combat and magic. Both come with pixel or symbolic observations, and both run on JAX.</p>
+<div class="io-grid"><div class="io-card io-in"><div class="io-head">Observe</div><div class="io-row"><span class="io-key">Image</span><span class="io-val"><span class="io-item">Classic: 63 × 63 RGB</span><span class="io-item">Full: 130 × 110 RGB</span></span></div><div class="io-row"><span class="io-key">Symbolic</span><span class="io-val"><span class="io-item">map, inventory and<br>stats as one vector</span><span class="io-item">Classic: 1,345 values</span><span class="io-item">Full: 8,268 values</span></span></div></div><div class="io-card io-act"><div class="io-head">Act</div><div class="io-row"><span class="io-key">Type</span><span class="io-val"><span class="io-item">discrete</span></span></div><div class="io-row"><span class="io-key">Action</span><span class="io-val"><span class="io-item">Classic: one of 17<br>(move, do, sleep,<br>place, make…)</span><span class="io-item">Full: one of 43<br>(adds combat, magic,<br>floor changes)</span></span></div></div><div class="io-card io-goal"><div class="io-head">Goal</div><div class="io-row"><span class="io-key">Given as</span><span class="io-val"><span class="io-item">no fixed goal</span></span></div><div class="io-row"><span class="io-key">Score</span><span class="io-val"><span class="io-item">achievements unlocked</span><span class="io-item">Classic: 22, Full: 69+</span></span></div><div class="io-row"><span class="io-key">Ends</span><span class="io-val"><span class="io-item">when the player dies</span></span></div></div></div>
+<div class="io-meta"><div class="io-row"><span class="io-key">ID</span><span class="io-val"><span class="io-item"><code>swm/CraftaxClassicPixels-v1</code></span><span class="io-item"><code>swm/CraftaxClassicSymbolic-v1</code></span><span class="io-item"><code>swm/CraftaxPixels-v1</code></span><span class="io-item"><code>swm/CraftaxSymbolic-v1</code></span></span></div><div class="io-row"><span class="io-key">Varies</span><span class="io-val"><span class="io-item"><strong>Visual wrappers</strong>: blur, noise, colour jitter, occlusion and others</span><span class="io-item io-total">no native factors; the simulator cannot be changed from the inside</span></span></div></div>
+<figure>
+  <img src="../../assets/posts/stable-worldmodel/craftax.gif" alt="An animation of Craftax: a player moving through a top-down, Minecraft-like world of grass, trees and water." width="224" height="224" loading="lazy" decoding="async">
+  <figcaption>Craftax, the full version. Animation from the <a href="https://github.com/galilai-group/stable-worldmodel" target="_blank" rel="noopener">swm docs</a>.</figcaption>
+</figure>
+</div></div>
+<div class="cfyb-block cfyb-row cfyb-card cfyb-paper" data-label="Atari — over 100 arcade games"><div class="cfyb-block-body">
+<p>The Arcade Learning Environment: classic Atari games with visual wrappers for factors of variation.</p>
+<div class="io-grid"><div class="io-card io-in"><div class="io-head">Observe</div><div class="io-row"><span class="io-key">Image</span><span class="io-val"><span class="io-item">210 × 160 RGB<br>game screen</span></span></div></div><div class="io-card io-act"><div class="io-head">Act</div><div class="io-row"><span class="io-key">Type</span><span class="io-val"><span class="io-item">discrete</span></span></div><div class="io-row"><span class="io-key">Action</span><span class="io-val"><span class="io-item">one joystick move</span><span class="io-item">up to 18: directions,<br>fire, combinations</span></span></div></div><div class="io-card io-goal"><div class="io-head">Goal</div><div class="io-row"><span class="io-key">Given as</span><span class="io-val"><span class="io-item">the game's score</span></span></div></div></div>
+<div class="io-meta"><div class="io-row"><span class="io-key">ID</span><span class="io-val"><span class="io-item"><code>ALE/&lt;Game&gt;-v5</code></span><span class="io-item">for example <code>ALE/Pong-v5</code></span></span></div><div class="io-row"><span class="io-key">Varies</span><span class="io-val"><span class="io-item"><strong>Visual wrappers</strong>: colours, backgrounds and other image changes</span></span></div></div>
+<figure>
+  <img src="../../assets/posts/stable-worldmodel/ale.png" alt="A grid of Atari game screens including maze, shooter and platform games." width="672" height="672" loading="lazy" decoding="async">
+  <figcaption>Arcade Learning Environment games. Figure from <a href="https://arxiv.org/abs/2605.21800" target="_blank" rel="noopener">stable-worldmodel</a> (2026).</figcaption>
+</figure>
+</div></div>
+<div class="cfyb-block cfyb-row cfyb-card cfyb-paper" data-label="Rocket landing — land a rocket on a pad"><div class="cfyb-block-body">
+<p>A physics-based rocket (PyFlyt) must land upright on a landing pad without running out of fuel or hitting too hard. Its action has seven continuous components, and its dynamics are unforgiving.</p>
+<div class="io-grid"><div class="io-card io-in"><div class="io-head">Observe</div><div class="io-row"><span class="io-key">Image</span><span class="io-val"><span class="io-item">480 × 480 RGB</span></span></div><div class="io-row"><span class="io-key">State</span><span class="io-val"><span class="io-item">angular velocity<br>(ωx, ωy, ωz)</span><span class="io-item">attitude (quaternion<br>by default)</span><span class="io-item">velocity (vx, vy, vz)</span><span class="io-item">position (x, y, z)</span><span class="io-item">previous action</span><span class="io-item">auxiliary readings</span><span class="io-item">pad contact (yes / no)</span></span></div></div><div class="io-card io-act"><div class="io-head">Act</div><div class="io-row"><span class="io-key">Type</span><span class="io-val"><span class="io-item">continuous</span></span></div><div class="io-row"><span class="io-key">Action</span><span class="io-val"><span class="io-item">finlets (x, y, roll)</span><span class="io-item">booster ignition</span><span class="io-item">throttle</span><span class="io-item">booster gimbal (x, y)</span></span></div></div><div class="io-card io-goal"><div class="io-head">Goal</div><div class="io-row"><span class="io-key">Given as</span><span class="io-val"><span class="io-item">the landing pad</span></span></div><div class="io-row"><span class="io-key">Success</span><span class="io-val"><span class="io-item">on the pad,<br>nearly upright</span><span class="io-item">angular speed below 5</span><span class="io-item">speed below 4</span></span></div></div></div>
+<div class="io-meta"><div class="io-row"><span class="io-key">ID</span><span class="io-val"><span class="io-item"><code>swm/PFRocketLanding-v0</code></span></span></div><div class="io-row"><span class="io-key">Varies</span><span class="io-val"><span class="io-item"><strong>Colours</strong>: rocket, pad, sky</span><span class="io-item"><strong>Start</strong>: height, horizontal offset, tilt</span></span></div></div>
+</div></div>
+<h2 id="factors-of-variation"><a class="heading-anchor" href="#factors-of-variation" aria-hidden="true">#</a>Factors of variation</h2>
+<p>Each environment comes with a set of factors that can be changed independently: colours, sizes and shapes of objects, lighting, camera angle, background, and physical properties such as mass and friction. A model trained under default settings can then be tested under a controlled shift, one factor at a time, or several together.</p>
+<figure>
+  <img src="../../assets/posts/stable-worldmodel/robotics-variations.png" alt="A grid of robot manipulation scenes with randomised colours of the arm, table, floor and objects, different lighting, and black occluding squares." width="678" height="678" loading="lazy" decoding="async">
+  <figcaption>All visual factors changed at once. Figure from <a href="https://arxiv.org/abs/2605.21800" target="_blank" rel="noopener">stable-worldmodel</a> (2026).</figcaption>
+</figure>
+<p>On top of these, 11 visual wrappers (blur, noise, colour jitter, occlusion and others) can be applied to any environment, changing only the image the model sees. They are the only source of variation for Atari and Craftax, whose simulators cannot be changed from the inside.</p>
+<figure>
+  <img src="../../assets/posts/stable-worldmodel/visual-wrappers.png" alt="Ten copies of the same Craftax frame: the default image, then with blur, noise, colour jitter, grayscale, a moving white patch, black occluding rectangles, a random convolution, a random shift and a lower resolution." width="2354" height="1134" loading="lazy" decoding="async">
+  <figcaption>Visual wrappers on a Craftax frame. Figure from <a href="https://arxiv.org/abs/2605.21800" target="_blank" rel="noopener">stable-worldmodel</a> (2026).</figcaption>
+</figure>
+<div class="cfyb-block cfyb-row cfyb-card cfyb-code" data-label="Code example — how to change factors"><div class="cfyb-block-body">
+<p>By default, only a few factors are randomised at every reset, usually the start and goal positions; the rest stay at their default values. Other factors are switched on per reset with the <code>variation</code> option, and can be set to exact values with <code>variation_values</code>:</p>
+<div class="code-block" data-lang="python"><pre><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">stable_worldmodel</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">swm</span>
+
+<span class="n">world</span> <span class="o">=</span> <span class="n">swm</span><span class="o">.</span><span class="n">World</span><span class="p">(</span><span class="s2">"swm/PushT-v1"</span><span class="p">,</span> <span class="n">num_envs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">image_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">))</span>
+
+<span class="c1"># Randomise only these factors at this reset</span>
+<span class="n">world</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s2">"variation"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"agent.color"</span><span class="p">,</span> <span class="s2">"block.color"</span><span class="p">]})</span>
+
+<span class="c1"># Randomise every factor</span>
+<span class="n">world</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s2">"variation"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"all"</span><span class="p">]})</span>
+
+<span class="c1"># Set a factor to an exact value</span>
+<span class="n">world</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{</span>
+    <span class="s2">"variation"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"agent.color"</span><span class="p">],</span>
+    <span class="s2">"variation_values"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"agent.color"</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)},</span>
+<span class="p">})</span>
+</code></pre></div>
+<p>To list every factor of an environment, with its type, range and default:</p>
+<div class="code-block" data-lang="bash"><pre><code>swm<span class="w"> </span>fovs<span class="w"> </span>swm/PushT-v1
+</code></pre></div>
+</div></div>
+<h2 id="summary"><a class="heading-anchor" href="#summary" aria-hidden="true">#</a>Summary</h2>
+<p>stable-worldmodel puts the whole world-model workflow in one library: collecting data in about 150 environments, training with ready-made baselines, and evaluating by planning with a choice of solvers. Its factors of variation and visual wrappers make it possible to change one thing at a time, colours, shapes, physics or the image itself, and see how a world model copes.</p>
+<div class="cfyb-block" data-label="My thoughts"><div class="cfyb-block-body">
+<p>One thing I think would be nice to have is a unified, live leaderboard, as results for world models are currently spread across papers and docs, each with its own budget and settings. As interest in world models grows and more and more researchers start working on them, the lack of a live leaderboard makes it harder to see where the field stands.</p>
+<p>I hope that in the near future we will see such live leaderboards, or platforms that track the state of the art in world models, keeping everything in one place and making it much easier to navigate. Maybe I will try to build one myself, maybe not, who knows?! 😄</p>
+</div></div>
+<p><a href="https://arxiv.org/abs/2605.21800" target="_blank" rel="noopener">Paper</a> · <a href="https://github.com/galilai-group/stable-worldmodel" target="_blank" rel="noopener">Code</a></p>
+            </div>
+          </article>
+
+          <footer class="post-footer">
+            <p>
+              Written by Gagik Navasardyan.
+              <a href="mailto:gagiknavasard@gmail.com">Send a reply</a>.
+            </p>
+            <a class="back-link" href="../../writing/">
+              <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+              all posts
+            </a>
+          </footer>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2026 Gagik Navasardyan</p>
+    </div>
+  </footer>
+</body>
+</html>

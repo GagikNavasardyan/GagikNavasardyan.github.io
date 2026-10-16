@@ -1,0 +1,13 @@
+# macOS / Python clutter
+.DS_Store
+__pycache__/
+
+# Drafts: not published yet, keep them out of the public repo
+posts/2026-06-19-v-jepa.md
+posts/2026-08-26-mol-jepa.md
+posts/2026-08-27-formatting-reference.md
+assets/posts/v-jepa/
+assets/posts/mol-jepa/
+assets/covers/v-jepa.gif
+assets/covers/mol-jepa.gif
+.claude/

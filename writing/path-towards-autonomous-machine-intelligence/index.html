@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Path Towards Autonomous Machine Intelligence · Gagik Navasardyan</title>
+  <meta name="description" content="The ideas behind LeCun&#x27;s &quot;A Path Towards Autonomous Machine Intelligence&quot;: world models, the six-module agent, Mode-1 and Mode-2, energy-based models, JEPA and H-JEPA, kept simple, short and direct.">
+  <meta name="theme-color" content="#FFFFFF">
+  <link rel="canonical" href="https://gagiknavasardyan.github.io/writing/path-towards-autonomous-machine-intelligence/">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="A Path Towards Autonomous Machine Intelligence">
+  <meta property="og:description" content="The ideas behind LeCun&#x27;s &quot;A Path Towards Autonomous Machine Intelligence&quot;: world models, the six-module agent, Mode-1 and Mode-2, energy-based models, JEPA and H-JEPA, kept simple, short and direct.">
+  <meta property="og:image" content="https://gagiknavasardyan.github.io/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Gagik Navasardyan · MSc in Artificial Intelligence, UB · UPC · URV, Barcelona.">
+  <meta property="og:url" content="https://gagiknavasardyan.github.io/writing/path-towards-autonomous-machine-intelligence/">
+  <meta property="article:published_time" content="2026-05-18">
+  <meta property="article:author" content="Gagik Navasardyan">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+  <script src="../../theme.js"></script>
+  <script src="../../transitions.js"></script>
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../../blog.css">
+  <script src="../../blog.js" defer></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}], throwOnError:false});"></script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "A Path Towards Autonomous Machine Intelligence",
+    "datePublished": "2026-05-18",
+    "author": { "@type": "Person", "name": "Gagik Navasardyan" },
+    "url": "https://gagiknavasardyan.github.io/writing/path-towards-autonomous-machine-intelligence/"
+  }
+  </script>
+</head>
+<body class="blog">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <nav class="nav container" aria-label="Main">
+      <a class="nav-logo" href="../../index.html" aria-label="Back to the portfolio">GN</a>
+      <ul class="nav-menu" id="nav-menu">
+        <li><a class="nav-writing active" href="../../writing/"><span class="nav-writing-dot" aria-hidden="true"></span>Blog</a></li>
+      </ul>
+      <div class="nav-actions">
+          <button class="theme-toggle" type="button" aria-pressed="false" aria-label="Switch to dark theme" title="Toggle theme">
+            <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+            <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+          </button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main" class="blog-main">
+    <div class="container">
+
+      <div class="window window-post">
+        <div class="window-bar" aria-hidden="true">
+          <span class="term-dot term-dot-r"></span>
+          <span class="term-dot term-dot-y"></span>
+          <span class="term-dot term-dot-g"></span>
+          <span class="window-title">A Path Towards Autonomous Machine Intelligence</span>
+        </div>
+        <div class="window-body">
+          
+          <a class="back-link" href="../../writing/">
+            <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+            blog
+          </a>
+
+          
+
+          <article class="post">
+            <header class="post-header">
+              <h1>A Path Towards Autonomous Machine Intelligence</h1>
+              <p class="post-byline">
+                <time datetime="2022-06-27">paper · Jun 27, 2022</time>
+                
+                · 16 min read
+                
+              </p>
+            </header>
+
+            <div class="prose">
+<ul class="prose-list"><li>How could machines learn as efficiently as humans and animals?</li><li>How could machines learn to reason and plan?</li><li>How could machines learn representations at multiple levels of abstraction, to predict and plan over multiple time horizons?</li></ul>
+<p><a href="https://openreview.net/pdf?id=BZ5a1r-kVsf" target="_blank" rel="noopener">A Path Towards Autonomous Machine Intelligence</a> (LeCun, 2022) proposes an architecture and training paradigms for building autonomous intelligent agents. It combines:</p>
+<ul class="prose-list"><li>a configurable predictive world model</li><li>behaviour driven by intrinsic motivation</li><li>hierarchical joint embedding architectures, trained with self-supervised learning</li></ul>
+<p>In this post I go through these ideas, keeping them as simple, short, and direct as I can.</p>
+<h2 id="why-world-models"><a class="heading-anchor" href="#why-world-models" aria-hidden="true">#</a>Why world models</h2>
+<p>A teenager learns to drive in about twenty hours of practice. A child picks up a language from what is, all things considered, a small amount of listening. A baby learns that unsupported objects fall, and that a hidden toy still exists, in the first months of life, mostly by observing, with very little trial and error. And we handle the unexpected with ease: find a fallen tree across your path, and you just step over it or walk around.</p>
+<p>Machines are still far from this. To be reliable, a machine learning system has to see so much data that even the rarest combination of situations shows up many times during training. Self-driving cars are the clearest example. They are fed huge amounts of driving data from human experts, put through millions of trials in simulation, and given hundreds of behaviours hand-written by engineers. Even so, matching the reliability of human drivers remains a hard problem. Humans, by contrast, rely on intuitive physics to predict how things will turn out.</p>
+<p>The paper suggests that humans and animals carry a <em>world model</em>: an internal model of how the world works, learned by observation. The knowledge it holds is what we call common sense. It tells us what is likely, plausible, or impossible, fills in what is hidden, predicts what happens next, and lets us imagine the result of an action before taking it. And when something contradicts it, we pay attention: it may be a danger, or a chance to learn.</p>
+<p>So the central question becomes: how can a machine learn a world model mostly from observation, using unlabelled data? It breaks into three smaller problems.</p>
+<p><strong>Learn by observing.</strong> In the real world, trying things is slow, expensive, and sometimes dangerous. A robot that learns by crashing breaks itself; a car that learns by crashing hurts someone. So an agent should learn as much as it can just by observing (seeing, hearing, touching) and save real trials for the few lessons only experience can teach.</p>
+<p><strong>Reason with gradients.</strong> The learning methods that work best today follow the gradient of a loss, which requires every part of the system to be differentiable. Classic reasoning is built on discrete symbols and logic, which makes the two hard to combine. So reasoning and planning have to be rebuilt in a form that gradients can flow through.</p>
+<p><strong>Think in levels.</strong> Babies build their knowledge in layers: depth → objects → objects persist and move smoothly → some things move predictably, others erratically, like leaves in the wind → gravity and inertia → cause and effect → language and social rules. Plans work the same way. You plan dinner in big steps: pick a recipe, buy the ingredients, cook. &quot;Cook&quot; becomes chop, fry, stir, and each of those becomes movements of your hands. Machines need the same thing: representations and plans at several levels of abstraction, so they can predict and plan both a second ahead and a day ahead.</p>
+<p>The paper proposes possible solutions to all three: an architecture where every module is differentiable, a way to learn a world model by observing (JEPA), and a stack of such models for planning at several levels (H-JEPA). The rest of this post goes through them one by one.</p>
+<h2 id="the-architecture"><a class="heading-anchor" href="#the-architecture" aria-hidden="true">#</a>The architecture</h2>
+<p>Here is the architecture the paper suggests for an autonomous intelligent agent:</p>
+<figure>
+  <img src="../../assets/posts/path-towards-autonomous-machine-intelligence/architecture-clean.png" alt="The proposed architecture drawn over a sketch of a brain: a configurator at the top with arrows into perception, short-term memory, the actor and the world model; perception feeding the world model and the actor; the world model exchanging with short-term memory and feeding a cost module containing an intrinsic cost and a critic; the actor emitting an action to the world, and the world returning a percept to perception." width="1240" height="1158" loading="lazy" decoding="async">
+  <figcaption>Figure 2 from <a href="https://openreview.net/pdf?id=BZ5a1r-kVsf" target="_blank" rel="noopener">A Path Towards Autonomous Machine Intelligence</a> (LeCun, 2022).</figcaption>
+</figure>
+<p>The agent is built from six modules. Open any of them to see how it works.</p>
+<div class="cfyb-block cfyb-row" data-label="Configurator — primes the other modules for the task"><div class="cfyb-block-body">
+<p>Given a task, it modulates the parameters and attention of the other modules it communicates to (perception, world model, cost, actor) for that specific task. So the same modules behave differently from one task to the next. How it learns to break a complex task into subgoals in the first place is left open for future investigation.</p>
+</div></div>
+<div class="cfyb-block cfyb-row" data-label="Perception — estimates the current state of the world"><div class="cfyb-block-body">
+<p>Estimates the current state of the world from sensor signals, at one or more levels of abstraction. Of that state, it extracts only the relevant information for the task (set by the configurator).</p>
+</div></div>
+<div class="cfyb-block cfyb-row" data-label="World model — fills in what perception misses, and works out what could come next"><div class="cfyb-block-body">
+<p>The world model component has two main roles:</p>
+<ol class="prose-list"><li>estimate the information about the state of the world that perception does not provide</li><li>predict how the world will evolve, on its own or under actions the actor proposes</li></ol>
+<p>Both of these are performed within an abstract representation space, and ideally the world model would be able to manipulate representations of the world state at multiple levels of abstraction, allowing it to predict over multiple time scales.</p>
+<p>The world model has to represent several possible predictions, because the natural world is not completely predictable. This is especially true when it contains other agents, possibly adversarial ones, but even inanimate objects can behave chaotically or have a state that is not fully observable.</p>
+<p>There are two essential questions to answer when building the proposed architectures: (1) how to allow the world model to make multiple plausible predictions and represent uncertainty in the predictions, and (2) how to train the world model.</p>
+</div></div>
+<div class="cfyb-block cfyb-row" data-label="Cost — measures the level of &quot;discomfort&quot;, or energy"><div class="cfyb-block-body">
+<p>Turns a state into one number, its <em>energy</em>: high for discomfort, low for comfort. The agent&#x27;s objective is to act so as to stay in states that minimise the average energy. That energy is the sum of two terms, computed by two sub-modules.</p>
+<p><strong>Intrinsic cost</strong>: hardwired and fixed. It measures discomfort right now, pain up, pleasure down, and the ultimate goal of the agent is to minimise it over the long run. This is where the agent&#x27;s basic drives live, so its design shapes the whole behaviour: feeling good when a legged robot stands up (so it learns to walk), when the energy supply is full (hunger), when meeting a new situation (curiosity), when nearby people are happy (empathy); feeling bad near fire, or while handling dangerous tools. Learning leaves this part untouched, so the agent cannot drift towards bad behaviour by rewriting what it wants.</p>
+<p><strong>Critic</strong>: trainable. It predicts an estimate of future intrinsic energies, taking either the current state of the world or states the world model predicts. To train, it takes past states together with the intrinsic costs that followed them, and learns to predict the second from the first. It has two uses: seeing long-term outcomes without running the expensive world model, and giving the configurator a learned cost to point at a sub-goal inside a bigger task.</p>
+<p>Both sub-modules are differentiable, so the gradient of the energy can be back-propagated through the other modules, particularly the world model, the actor and perception, for planning, reasoning and learning.</p>
+<p>So here is the cost formula:</p>
+<div class="math-display">$$C(s) = \mathrm{IC}(s) + \mathrm{TC}(s),
+\qquad \mathrm{IC}(s) = \sum_i u_i \mathrm{IC}_i(s),
+\qquad \mathrm{TC}(s) = \sum_j v_j \mathrm{TC}_j(s)$$</div>
+<p>Here <span class="math-inline">$C(s)$</span> is the energy of a state <span class="math-inline">$s$</span>, <span class="math-inline">$\mathrm{IC}$</span> the hardwired intrinsic cost, and <span class="math-inline">$\mathrm{TC}$</span> the trainable critic. Each half is itself a weighted sum of sub-modules, one per drive, and those weights <span class="math-inline">$u_i$</span> and <span class="math-inline">$v_j$</span> are what the configurator turns to put the agent on a different subgoal.</p>
+</div></div>
+<div class="cfyb-block cfyb-row" data-label="Short-term memory — holds states and their costs"><div class="cfyb-block-body">
+<p>It keeps track of past, current, and future states, together with their intrinsic cost. The world model reads from it and writes to it while temporally predicting future (or past) states of the world, and while spatially completing missing or inconsistent information about the current state. The critic learns from what it stores.</p>
+</div></div>
+<div class="cfyb-block cfyb-row" data-label="Actor — proposes actions and settles on the best sequence"><div class="cfyb-block-body">
+<p>It decides what to do. It proposes a sequence of actions, the world model predicts where they lead, and the cost scores the result. The actor then improves the sequence, using the gradient of the cost (or dynamic programming, when the actions are discrete). Once it settles on a plan, it executes the first action, and the loop starts again.</p>
+<p>The actor may come in two parts: (1) a policy module, which turns the state estimate it gets from perception and short-term memory straight into an action, and (2) the action optimiser described above.</p>
+<p>It searches over two kinds of variable: actions, for the sequence that lowers the cost, and latents, to cover the futures it cannot rule out. In an adversarial setting it does the opposite with the latents, and looks for the ones that raise the cost.</p>
+</div></div>
+<p>There is only one world model, and the configurator re-tunes it for the task at hand. One engine means knowledge is shared across tasks, and a model set up for one situation can be reused for another: reasoning by analogy.</p>
+<div class="cfyb-block" data-label="Did you notice?"><div class="cfyb-block-body">
+<p>Look closer at Figure 2. There&#x27;s a tiny <strong>9</strong> and a tiny <strong>6</strong> hiding in it. I&#x27;ve circled both in red, because otherwise nobody ever spots them.</p>
+<figure>
+  <img src="../../assets/posts/path-towards-autonomous-machine-intelligence/architecture-circled.png" alt="The proposed architecture drawn over a sketch of a brain: a configurator at the top with arrows into perception, short-term memory, the actor and the world model; perception feeding the world model and the actor; the world model exchanging with short-term memory and feeding a cost module containing an intrinsic cost and a critic; the actor emitting an action to the world, and the world returning a percept to perception. Two small numbers in the frontal lobe are circled in red: a 9 beneath the world model, and a 6 immediately beside the actor." width="900" height="840" loading="eager" decoding="async">
+  <figcaption>Figure 2 from <a href="https://openreview.net/pdf?id=BZ5a1r-kVsf" target="_blank" rel="noopener">A Path Towards Autonomous Machine Intelligence</a> (LeCun, 2022); red circles mine.</figcaption>
+</figure>
+<p>After some thorough research (I just asked Claude 😅), it turns out that:</p>
+<p><strong>Area 9</strong> is <span class="cfyb"><span class="cfyb-body">the dorsolateral prefrontal cortex, sitting in the upper, deep prefrontal region of the frontal lobe (are you happy now? 😒),</span></span> responsible for: working memory, complex planning, cognitive flexibility. Organising thoughts, managing attention, and calculating the long-term consequences of actions. Which is, entirely coincidentally, where LeCun has placed his World Model and his Short-Term Memory.</p>
+<p><strong>Area 6</strong> is <span class="cfyb"><span class="cfyb-body">the premotor and supplementary motor cortex, further back in the frontal lobe, immediately in front of the primary motor strip (are you happy now? 😒),</span></span> handling motor planning, movement preparation, and voluntary motor sequencing. It does not execute the twitch itself. It assembles the blueprint of a movement before you make it, the way you work out the order your fingers need to close in to catch a ball. Which is, again entirely coincidentally, where he has put the Actor.</p>
+<p>So on a diagram about deliberative planning and action selection, the two anatomical labels that happened to survive the collage are the planning area and the motor-planning area, and each is sitting underneath the module that does its job.</p>
+<p>Did he leave them there on purpose?</p>
+<div class="table-wrap"><table><thead><tr><th>Answer</th><th><span class="math-inline">$p$</span></th></tr></thead><tbody><tr><td>Yes</td><td>0.0001</td></tr><tr><td>I am a psycho</td><td>0.9999</td></tr></tbody></table></div>
+</div></div>
+<h2 id="two-ways-to-act"><a class="heading-anchor" href="#two-ways-to-act" aria-hidden="true">#</a>Two ways to act</h2>
+<div class="cfyb-block cfyb-row cfyb-card" data-label="Mode-1 — reactive behaviour"><div class="cfyb-block-body">
+<p>Perception produces a state, a policy maps it straight to an action. The world model stays idle. Fast and cheap.</p>
+<figure>
+  <img src="../../assets/posts/path-towards-autonomous-machine-intelligence/mode-1.png" alt="A Mode-1 perception-action episode. An observation x from the world goes into the encoder Enc(x), which outputs the state s[0]. That state feeds the cost C(s[0]) and the policy module A(s) inside the actor, which emits the action a[0] back to the world. Greyed out to the right, the predictor Pred(s, a) takes s[0] and a[0] to give the next state s[1] and its cost C(s[1])." width="1728" height="702" loading="lazy" decoding="async">
+  <figcaption>A Mode-1 episode: perception, policy, action. The greyed-out part is the optional prediction of the next state. Figure 3 from <a href="https://openreview.net/pdf?id=BZ5a1r-kVsf" target="_blank" rel="noopener">A Path Towards Autonomous Machine Intelligence</a> (LeCun, 2022).</figcaption>
+</figure>
+<p>Perception encodes the observation into a state, <span class="math-inline">$s[0] = \mathrm{Enc}(x)$</span>, and the policy module turns it straight into an action, <span class="math-inline">$a[0] = A(s[0])$</span>. Here <span class="math-inline">$x$</span> is the observation, <span class="math-inline">$s[0]$</span> the state, and <span class="math-inline">$A$</span> the policy. The cost still scores the state, <span class="math-inline">$f[0] = C(s[0])$</span>, and the pair is stored in short-term memory, but it steers nothing: this reactive loop leaves the world model and the cost out of the decision.</p>
+<p>Optionally, the world model predicts <span class="math-inline">$s[1] = \mathrm{Pred}(s[0], a[0])$</span>. That prediction is no part of acting, it is bonus training: when the real next observation arrives, the world model is adjusted to match it.</p>
+</div></div>
+<div class="cfyb-block cfyb-row cfyb-card" data-label="Mode-2 — reasoning and planning using the world model"><div class="cfyb-block-body">
+<p>The agent imagines where its actions lead before taking any of them.</p>
+<figure>
+  <img src="../../assets/posts/path-towards-autonomous-machine-intelligence/mode-2.png" alt="A Mode-2 perception-action episode. An observation x goes through the encoder Enc(x) to give the state s[0]. A chain of predictors Pred(s, a) rolls the state forward: s[0] with action a[0] gives s[t], then s[t+1], then s[T-1] and s[T]. Each state feeds a cost box, C(s[0]) through C(s[T]). The actions a[0], a[t], a[t+1], a[T-1] all come from the actor below, and the first one is sent to the world as the action." width="1776" height="450" loading="lazy" decoding="async">
+  <figcaption>A Mode-2 episode: the actor proposes actions, the world model rolls them forward, and every predicted state is scored. Figure 4 from <a href="https://openreview.net/pdf?id=BZ5a1r-kVsf" target="_blank" rel="noopener">A Path Towards Autonomous Machine Intelligence</a> (LeCun, 2022).</figcaption>
+</figure>
+<p>An episode runs in seven steps:</p>
+<ol class="prose-list"><li><strong>Perceive.</strong> Perception turns the observation into a state, and the cost scores it.</li><li><strong>Propose.</strong> The actor puts forward a sequence of actions for the world model to try.</li><li><strong>Simulate.</strong> The world model rolls the state forward through that sequence.</li><li><strong>Evaluate.</strong> The cost scores every predicted state, and the total is their sum.</li><li><strong>Plan.</strong> The actor proposes a cheaper sequence, usually by following the gradient of the total cost back to the actions. Steps 2 to 5 repeat until it settles.</li><li><strong>Act.</strong> The actor sends the first action (or first few) to the effectors, and the whole episode starts again from the new observation.</li><li><strong>Remember.</strong> After every action, the states and their costs, from both the intrinsic cost and the critic, go into short-term memory, where they can later train or adapt the critic.</li></ol>
+<p>Written out, the actor is looking for</p>
+<div class="math-display">$$\check{a}[0{:}T] = \arg\min_{a[0{:}T]} \sum_{t=0}^{T} C(s[t]),
+\qquad s[0] = \mathrm{Enc}(x), \quad s[t+1] = \mathrm{Pred}(s[t], a[t])$$</div>
+<p>where <span class="math-inline">$x$</span> is the observation, <span class="math-inline">$s[t]$</span> the state at step <span class="math-inline">$t$</span>, <span class="math-inline">$a[t]$</span> the action taken there, <span class="math-inline">$C$</span> the cost, <span class="math-inline">$T$</span> the horizon it plans over, and <span class="math-inline">$\check{a}[0{:}T]$</span> the cheapest sequence it finds.</p>
+<p>Planning a sequence, executing its first action, then planning again from what you see is <strong>model-predictive control</strong>, a standard method in optimal control. What is new here is that both the world model and the cost are learned.</p>
+</div></div>
+<p>The two modes feed each other. Mode-2 works a new problem out slowly, then Mode-1 is trained to imitate the result, so next time the skill is automatic. That is learning to drive: at first every move is deliberate, later it happens on its own.</p>
+<p>In this view, <strong>reasoning is energy minimisation</strong>: finding the actions that make the cost as low as possible. The world model is trained the same way, as an <em>energy function</em> <span class="math-inline">$F(x, y)$</span> scoring how well a candidate future <span class="math-inline">$y$</span> fits what has been seen so far, <span class="math-inline">$x$</span>: low for plausible pairs, high for the rest. Unlike a probability, it never has to be normalised over every possible future, which in a continuous space is intractable anyway. And where several futures stay open, the choice between them is carried by a <strong>latent variable</strong> <span class="math-inline">$z$</span>, which stands for what <span class="math-inline">$x$</span> cannot tell you about <span class="math-inline">$y$</span>: whether the car in front suddenly brakes.</p>
+<h2 id="jepa-predict-representations-instead-of-pixels"><a class="heading-anchor" href="#jepa-predict-representations-instead-of-pixels" aria-hidden="true">#</a>JEPA: predict representations instead of pixels</h2>
+<p>The obvious way to learn a world model is to predict the future directly, in pixels. The problem is that most of the future is unpredictable detail. In a video of a tree in the wind, the trunk is easy, the branches roughly predictable, each leaf essentially random. A pixel model is graded on every leaf anyway, and its safest guess is a blur.</p>
+<p>The <strong>Joint Embedding Predictive Architecture</strong> (JEPA) predicts in representation space instead, and never produces <span class="math-inline">$y$</span> itself. Encode the input <span class="math-inline">$x$</span> into <span class="math-inline">$s_x$</span>, encode the target <span class="math-inline">$y$</span> into <span class="math-inline">$s_y$</span>, then predict <span class="math-inline">$s_y$</span> from <span class="math-inline">$s_x$</span> and the latent <span class="math-inline">$z$</span>, and measure the error there:</p>
+<figure>
+  <img src="../../assets/posts/path-towards-autonomous-machine-intelligence/jepa.png" alt="The JEPA architecture. x goes into an encoder Enc(x) producing the representation s_x; y goes into a separate encoder Enc(y) producing s_y. A predictor Pred(s_x, z), taking a latent variable z drawn from a set Z, outputs a predicted representation s_y-tilde. A box D(s_y, s_y-tilde) compares the prediction with the target representation. Sweeping z over Z traces out a whole set of possible predictions." width="1256" height="916" loading="lazy" decoding="async">
+  <figcaption>Two encoders, a predictor, and the error measured between representations. Figure 12 from <a href="https://openreview.net/pdf?id=BZ5a1r-kVsf" target="_blank" rel="noopener">A Path Towards Autonomous Machine Intelligence</a> (LeCun, 2022).</figcaption>
+</figure>
+<div class="math-display">$$F(x, y) = \min_z \; \Big[ D\big(s_y, \; \mathrm{Pred}(s_x, z)\big) + R(z) \Big]$$</div>
+<p><span class="math-inline">$F(x, y)$</span> is the energy of the pair: low when <span class="math-inline">$y$</span> is a plausible continuation of <span class="math-inline">$x$</span>. <span class="math-inline">$D$</span> is a distance in representation space, <span class="math-inline">$\mathrm{Pred}$</span> the predictor, and <span class="math-inline">$R(z)$</span> a regulariser that limits how much the latent can carry, which is point 4 of the recipe below. Taking the minimum over <span class="math-inline">$z$</span> asks: under the most favourable choice of latent, how close can the prediction get?</p>
+<p>Working in representation space is what buys this. The model is never asked to reconstruct every pixel, a job that would take unlimited data and compute and still fail on the parts that were never predictable. It spends its capacity on the branches and lets the leaves go.</p>
+<h2 id="collapse-the-hard-part"><a class="heading-anchor" href="#collapse-the-hard-part" aria-hidden="true">#</a>Collapse, the hard part</h2>
+<p>There is a catch. If both encoders output the same constant for every input, the prediction is perfect and the representation is worthless. This is <strong>collapse</strong>, and the paper is upfront that it is the central difficulty. Where it comes from depends on the architecture: a latent that carries too much, a code that carries too much, or encoders that carry too little.</p>
+<figure>
+  <img src="../../assets/posts/path-towards-autonomous-machine-intelligence/contrastive-vs-regularised.png" alt="Left: an energy landscape with blue training samples, some inside an orange low-energy region and some outside it. Top right, the contrastive method: green contrastive samples scattered around the low-energy region, pushing its energy up from outside. Bottom right, the regularised method: green arrows squeezing the low-energy region inward until it wraps tightly around the training samples." width="1036" height="694" loading="lazy" decoding="async">
+  <figcaption>Two ways to keep the low-energy region small: push up from outside with contrastive samples, or shrink it from all sides with a regulariser. Figure 11 from <a href="https://openreview.net/pdf?id=BZ5a1r-kVsf" target="_blank" rel="noopener">A Path Towards Autonomous Machine Intelligence</a> (LeCun, 2022).</figcaption>
+</figure>
+<p>Two families of fixes exist. <em>Contrastive</em> methods push the energy up on bad pairs, which needs an enormous number of them to cover a high-dimensional space. <em>Regularised</em> methods instead shrink the low-energy region until it wraps tightly around the data, and this is what the paper recommends, in four parts:</p>
+<ol class="prose-list"><li>maximise the information <span class="math-inline">$s_x$</span> carries about <span class="math-inline">$x$</span></li><li>maximise the information <span class="math-inline">$s_y$</span> carries about <span class="math-inline">$y$</span></li><li>make <span class="math-inline">$s_y$</span> easy to predict from <span class="math-inline">$s_x$</span></li><li>minimise the information in the latent <span class="math-inline">$z$</span></li></ol>
+<figure>
+  <img src="../../assets/posts/path-towards-autonomous-machine-intelligence/jepa-criteria.png" alt="The JEPA architecture labelled with four training criteria: maximise the information content of s_x, maximise the information content of s_y, minimise the prediction error D(s_y, s_y-tilde), and minimise the information content of the latent through a regulariser R(z)." width="1634" height="942" loading="lazy" decoding="async">
+  <figcaption>The four criteria, hung on the architecture. Figure 13 from <a href="https://openreview.net/pdf?id=BZ5a1r-kVsf" target="_blank" rel="noopener">A Path Towards Autonomous Machine Intelligence</a> (LeCun, 2022).</figcaption>
+</figure>
+<p>The first two keep the representations alive; the last keeps the predictor honest, since a rich <span class="math-inline">$z$</span> lets it smuggle the answer through. Keeping it poor is a matter of making it discrete, low-dimensional, sparse, or noisy. For the first two the paper suggests <a href="https://arxiv.org/abs/2105.04906" target="_blank" rel="noopener">VICReg</a>, though plenty of work has gone into this since: <a href="../avoiding-collapse/">Avoiding collapse</a> follows that history, from the early tricks to the methods in use today.</p>
+<h2 id="hierarchical-jepa"><a class="heading-anchor" href="#hierarchical-jepa" aria-hidden="true">#</a>Hierarchical JEPA</h2>
+<p>One JEPA predicts one step ahead in one representation. Planning a trip from New York to Paris in those steps would be hopeless, so you plan it in big ones: get to the airport, catch a flight. Getting to the airport becomes: go down to the street, find a taxi. And so on, down to where to put your feet.</p>
+<figure>
+  <img src="../../assets/posts/path-towards-autonomous-machine-intelligence/h-jepa-stack.png" alt="A two-level hierarchical JEPA. Below the dashed line, JEPA-1: observations x0, x1 and x2 each go through an encoder Enc1 to give representations s1[0], s1[1] and s1[2], and a predictor Pred1 with its own latent z1 and regulariser R1 predicts s1[1] from s1[0], scored by D1. Above the line, JEPA-2: the representations from Enc1 are encoded again by Enc2 into s2[0] and s2[2], and a predictor Pred2 with latent z2 and regulariser R2 predicts across two time steps at once, scored by D2." width="1694" height="1138" loading="lazy" decoding="async">
+  <figcaption>The upper level reads the lower level's representations and predicts further ahead with them. Figure 15 from <a href="https://openreview.net/pdf?id=BZ5a1r-kVsf" target="_blank" rel="noopener">A Path Towards Autonomous Machine Intelligence</a> (LeCun, 2022).</figcaption>
+</figure>
+<p><strong>H-JEPA</strong> stacks JEPAs to match. Lower levels keep detail and predict a short time ahead. Higher levels keep only abstract information, which is exactly what lets them predict far ahead. Planning follows the same stack: a higher level picks a subgoal, and the level below treats reaching it as its cost. This is the paper&#x27;s answer to reasoning and planning over multiple time horizons, and it stayed a sketch until <a href="../h-jepa/">H-JEPA</a> in 2026.</p>
+<h2 id="the-recommendations"><a class="heading-anchor" href="#the-recommendations" aria-hidden="true">#</a>The recommendations</h2>
+<p>LeCun later summed these choices up in his talks:</p>
+<div class="table-wrap"><table><thead><tr><th>Prefer</th><th>Over</th></tr></thead><tbody><tr><td>Joint-embedding architectures</td><td>Generative models</td></tr><tr><td>Energy-based models</td><td>Probabilistic models</td></tr><tr><td>Regularised methods</td><td>Contrastive methods</td></tr><tr><td>Model-predictive control</td><td>Reinforcement learning</td></tr></tbody></table></div>
+<p>The talks add two more points:</p>
+<ul class="prose-list"><li>drop auto-regressive generation</li><li>use reinforcement learning only when planning does not lead to the predicted outcome, to adjust the world model or the critic</li></ul>
+<h2 id="what-is-left-open"><a class="heading-anchor" href="#what-is-left-open" aria-hidden="true">#</a>What is left open</h2>
+<p>Turning the architecture into a working system is a lot of hard work, and the paper ends by naming the questions it can already foresee:</p>
+<ul class="prose-list"><li>whether a hierarchical JEPA can be built and trained from video at all, and whether it would learn the hierarchy of abstract concepts described earlier.</li><li>how precisely to regularise the latent so its information content stays low. Discrete, low-dimensional, sparse, stochastic: the options are listed, and which works best is open.</li><li>how the actor should infer latent values and optimal action sequences. Everything is differentiable, so gradients are available in principle, though a discrete action space or a jumpy cost may call for dynamic programming, tree search or other gradient-free methods instead.</li><li>how to instantiate several latent values in one planning episode. People flip spontaneously between readings of an ambiguous image, as with the Necker cube, and no mechanism here does the same.</li><li>what the modules look like inside, down to the routing and gating the predictor will probably need, and how the short-term memory should hold beliefs about the world.</li><li>the configurator, the least understood part of all, above all how it finds the sequence of subgoals a complex task breaks into.</li></ul>
+<p>And these are only the foreseeable ones.</p>
+<div class="cfyb-block" data-label="Emotions, consciousness and common sense"><div class="cfyb-block-body">
+<p>The paper closes with three connections it offers as guesses rather than claims.</p>
+<p><strong>Emotions.</strong> Pain, pleasure and hunger are what an intrinsic cost feels like from the inside; fear and elation are the critic anticipating outcomes. On this reading, any agent built this way has the equivalent of emotions, as a consequence of being driven by a cost rather than a bolted-on extra.</p>
+<p><strong>Consciousness.</strong> One world model engine, reconfigured for each task, would explain why we can reason consciously about only one thing at a time. The paper goes further and wonders whether the sense of consciousness is a side-effect of having a configurator at all: with a brain large enough to hold a separate model for every situation, no configurator would be needed, and the illusion might vanish.</p>
+<p><strong>Common sense.</strong> It is the ability to use a world model to fill in blanks: what happens next, what is behind the occluder, what could never have happened. LLMs pick up a startling amount of knowledge from text, yet much of common sense is never written down because it comes from dealing with the physical world, which leaves theirs shallow.</p>
+</div></div>
+<h2 id="where-it-led"><a class="heading-anchor" href="#where-it-led" aria-hidden="true">#</a>Where it led</h2>
+<p>Everything since, the work this paper set off and the lines that run alongside it, is collected in <a href="../world-model-map/">A map of the world-model literature</a>.</p>
+            </div>
+          </article>
+
+          <footer class="post-footer">
+            <p>
+              Written by Gagik Navasardyan.
+              <a href="mailto:gagiknavasard@gmail.com">Send a reply</a>.
+            </p>
+            <a class="back-link" href="../../writing/">
+              <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+              all posts
+            </a>
+          </footer>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2026 Gagik Navasardyan</p>
+    </div>
+  </footer>
+</body>
+</html>
