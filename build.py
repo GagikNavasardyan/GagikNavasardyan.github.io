@@ -790,6 +790,7 @@ WATCH_FILES = (
     ROOT / "transitions.js",
     ROOT / "styles.css",
     ROOT / "theme.js",
+    ROOT / "header.js",
     Path(__file__).resolve(),
 )
 

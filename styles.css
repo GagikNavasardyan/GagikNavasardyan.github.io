@@ -191,6 +191,16 @@ a:hover { color: var(--accent-strong); }
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
+  transition: transform 300ms ease, opacity 300ms ease;
+}
+/* header.js: faded out while scrolling down on narrow screens. */
+.site-header.is-hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-header { transition: none; }
 }
 html.js .site-header::after {
   content: "";

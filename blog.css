@@ -431,13 +431,6 @@
 /* Captions are short and centred — justifying them only opens gaps. */
 .prose figcaption { hyphens: none; }
 
-@media (max-width: 620px) {
-  /* Narrow measures make justification look worse than ragged-right. */
-  .prose p,
-  .prose-list li,
-  .prose blockquote p { text-align: left; }
-}
-
 .prose h2 {
   position: relative;
   font-size: 1.5rem;
