@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import hashlib
 import html
 import os
 import re
@@ -650,6 +651,27 @@ def external_links_new_tab(content: str) -> str:
     )
 
 
+# Stylesheets and scripts get a ?v=<content hash> suffix. GitHub Pages lets
+# browsers cache them for 10 minutes, so without it a returning visitor can get
+# new HTML with an old stylesheet. The hash changes only when the file does.
+VERSIONED_ASSETS = (
+    "styles.css", "blog.css", "theme.js", "transitions.js",
+    "blog.js", "header.js", "script.js",
+)
+_ASSET_RE = re.compile(
+    r'((?:href|src)="(?:\.\./)*)(' + "|".join(re.escape(a) for a in VERSIONED_ASSETS)
+    + r')(?:\?v=[0-9a-f]+)?"'
+)
+
+
+def asset_version(name: str) -> str:
+    return hashlib.sha256((ROOT / name).read_bytes()).hexdigest()[:8]
+
+
+def versioned(page: str) -> str:
+    return _ASSET_RE.sub(lambda m: f'{m.group(1)}{m.group(2)}?v={asset_version(m.group(2))}"', page)
+
+
 def build_post(post: Post, template: str) -> None:
     directory = OUT_DIR / post.slug
     directory.mkdir(parents=True, exist_ok=True)
@@ -683,7 +705,7 @@ def build_post(post: Post, template: str) -> None:
             ),
         },
     )
-    (directory / "index.html").write_text(page, encoding="utf-8")
+    (directory / "index.html").write_text(versioned(page), encoding="utf-8")
 
 
 def index_row(post: Post) -> str:
@@ -773,7 +795,7 @@ def build_index(posts: list[Post], template: str) -> None:
             "site": SITE_URL,
         },
     )
-    (OUT_DIR / "index.html").write_text(page, encoding="utf-8")
+    (OUT_DIR / "index.html").write_text(versioned(page), encoding="utf-8")
 
 
 # ============================================================
@@ -993,6 +1015,14 @@ def build_all(drafts: bool) -> None:
         build_post(post, post_template)
 
     build_index(visible, index_template)
+
+    # The portfolio page is hand-written, not generated: only its asset links
+    # are refreshed, in place, and only when a version actually changed.
+    home = ROOT / "index.html"
+    current = home.read_text(encoding="utf-8")
+    updated = versioned(current)
+    if updated != current:
+        home.write_text(updated, encoding="utf-8")
 
     # writing/ is generated output, so reconcile it: a post that was deleted or
     # flipped to draft must stop being reachable at its old URL.
