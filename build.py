@@ -798,6 +798,28 @@ def build_index(posts: list[Post], template: str) -> None:
     (OUT_DIR / "index.html").write_text(versioned(page), encoding="utf-8")
 
 
+def build_sitemap(posts: list[Post]) -> None:
+    # For search engines (robots.txt points here). Drafts never appear, even
+    # under --drafts. lastmod is when the post was written, or for a live post
+    # its last update; the paper date is not a change to the page.
+    published = [post for post in posts if not post.draft]
+    lastmod = {post: post.updated if post.live else post.date for post in published}
+    entries = [(f"{SITE_URL}/", None)]
+    entries.append((f"{SITE_URL}/writing/", max(lastmod.values(), default=None)))
+    entries += [(SITE_URL + post.url, lastmod[post]) for post in published]
+    rows = []
+    for loc, date in entries:
+        stamp = f"<lastmod>{date.isoformat()}</lastmod>" if date else ""
+        rows.append(f"  <url><loc>{html.escape(loc)}</loc>{stamp}</url>")
+    xml = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        + "\n".join(rows)
+        + "\n</urlset>\n"
+    )
+    (ROOT / "sitemap.xml").write_text(xml, encoding="utf-8")
+
+
 # ============================================================
 # Entry point
 # ============================================================
@@ -1015,6 +1037,7 @@ def build_all(drafts: bool) -> None:
         build_post(post, post_template)
 
     build_index(visible, index_template)
+    build_sitemap(posts)
 
     # The portfolio page is hand-written, not generated: only its asset links
     # are refreshed, in place, and only when a version actually changed.

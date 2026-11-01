@@ -2,6 +2,7 @@
 title: A map of the world-model literature
 date: 2026-10-16
 live: true
+updated: 2026-11-01
 tags: [world-models, planning]
 summary: A living map of world-model research and industry, grouped by approach, with a short description and links for every paper.
 ---
@@ -343,6 +344,14 @@ The next generation of Cosmos: one flow-based model for text-, image- and video-
 
 {
 
+Wayve's third GAIA, aimed at testing driving systems rather than at visuals: 15B parameters, twice the size of GAIA-2, trained on ten times more data. It generates safety-critical what-if scenarios offline, carries the same tests across vehicle rigs, and varies visual conditions to test robustness.
+
+[Announcement](https://wayve.ai/press/wayve-launches-gaia3/)
+
+}{cfyb paper: GAIA-3 (2025) — a driving world model for evaluation}
+
+{
+
 Waymo adapts Genie 3 to driving. It generates camera and lidar data for rare situations its fleet has never recorded, and engineers control it with language prompts, driving inputs and scene layouts.
 
 [Blog](https://waymo.com/blog/2026/02/the-waymo-world-model-a-new-frontier-for-autonomous-driving-simulation)
@@ -380,6 +389,22 @@ Generates video and spatial stereo sound together, conditioned on camera motion 
 [Paper](https://arxiv.org/abs/2609.38123)
 
 }{cfyb paper: HelixWorld (2026) — an interactive world you can also hear}
+
+{
+
+Video world models usually generate in the latent space of an autoencoder trained only to reconstruct. Training that autoencoder with temporal objectives, plus a past-conditioned decoder, gives up to 5× cheaper inference, over 7× faster training, and 15 to 24% lower errors out of distribution and over long horizons. A bridge between generative and JEPA-style world models.
+
+[Paper](https://arxiv.org/abs/2610.34663)
+
+}{cfyb paper: Video World Models Need Predictable Latents (2026) — temporal objectives for the autoencoder}
+
+{
+
+DeepMind's first real-time world model that generates audio natively: ambient sound and character dialogue together with the video. Scenes can be steered with language while you play, and Gemini models plan, break goals into steps and check progress inside the loop. A research preview for trusted testers.
+
+[Blog](https://deepmind.google/blog/genie-4-a-new-generation-of-world-simulation/)
+
+}{cfyb paper: Genie 4 (2026) — real-time worlds with native sound}
 
 ## Joint-embedding world models (JEPA)
 
@@ -659,11 +684,11 @@ Uses a SIGReg-regularised projector for end-to-end autonomous driving, reporting
 
 {
 
-Shows that the isotropic Gaussian from SIGReg can rank outcomes differently from the task cost, and learns an anisotropic covariance instead, improving on LeWorldModel in all four environments. A direct answer to the question I raise in my [LeJEPA post](../lejepa/).
+Shows that the isotropic Gaussian from SIGReg can rank outcomes differently from the task cost, and learns an anisotropic covariance instead, improving on LeWorldModel in all four environments. It studies, for planning, the question I raise in my [LeJEPA post](../lejepa/).
 
-[Paper](https://arxiv.org/abs/2609.37441)
+[Paper](https://arxiv.org/abs/2609.37441) · [My post](../anisowm/)
 
-}{cfyb paper: AnisoWM (2026) — anisotropic latents plan better}
+}{cfyb paper post: AnisoWM (2026) — anisotropic latents plan better}
 
 {
 
@@ -735,11 +760,51 @@ One end-to-end JEPA that predicts the next latent and generates actions with flo
 
 {
 
+Replaces the predictor with an action-conditioned Hamiltonian flow over a position-momentum latent, integrated with an exactly symplectic leapfrog step. Phase-space volume is preserved at every step, so long rollouts cannot contract or merge distinct states, whatever the learned parameters. Much better long-horizon velocity prediction on visual pendulum environments.
+
+[Paper](https://arxiv.org/abs/2610.15267)
+
+}{cfyb paper: LeHami (2026) — symplectic dynamics that cannot contract}
+
+{
+
+A target similarity kernel says which observations should be close, and the encoder reproduces it in its embedding geometry; the kernel can come from physical state or simply from time order within a trajectory. The temporal kernel raises CEM planning success over LeWorldModel from 52% to 68% on OGBench Cube, 49% to 77% on Scene and 29% to 51% on CALVIN.
+
+[Paper](https://arxiv.org/abs/2610.15429)
+
+}{cfyb paper: World Modeling through Spectral Alignment (2026) — choose which relationships to keep}
+
+{
+
 Across 15 checkpoints of an end-to-end JEPA world model, one-step prediction error kept improving while planning success did not (correlation r = -0.010). One-step loss is a poor criterion for choosing or ablating world models.
 
 [Paper](https://arxiv.org/abs/2610.19375)
 
 }{cfyb paper: One-step fidelity is a poor proxy (2026) — better prediction, same planning}
+
+{
+
+A benchmark and open-source library of goal-shifted variants of common world-model environments: every state factor and action is inside the training data, but their combinations are rare in expert trajectories. Current world models fail consistently on these recombinations.
+
+[Paper](https://arxiv.org/abs/2610.26844)
+
+}{cfyb paper: AnyGoal (2026) — goals the expert data never covered}
+
+{
+
+Describes numerical actions and visual changes in language, so one predictor, built on a language model, trains across simulation, robot, image and video data. It plans better on average than world models trained per domain, and matches a video-generation baseline with 6× less training cost and 13.9× faster planning.
+
+[Paper](https://arxiv.org/abs/2610.27851)
+
+}{cfyb paper: LaLa-World (2026) — actions described in language}
+
+{
+
+Defines a faithful latent world model as one whose latent dynamics are equivariant to the environment's transitions, and measures it with latent rollout consistency. None of the state-of-the-art latent world models studied solves its tasks by faithfully modelling the dynamics.
+
+[Paper](https://arxiv.org/abs/2610.37588)
+
+}{cfyb paper: Understanding the limits of latent world models (2026) — none model the dynamics faithfully}
 
 ### Beyond vision
 
@@ -963,6 +1028,14 @@ Shows that the Gaussian is not the only answer when latents live on curved space
 
 {
 
+A mask is a linear measurement, and targets that a low-level prior can fill in give the JEPA loss a shortcut. Block masks work because they hide coarse content that cannot be recovered from the context. Across 151 pretraining runs, on ImageNet-100 strip masks reach 40.3% linear top-1 and random masks 40.8%, against 64.3% for blocks.
+
+[Paper](https://arxiv.org/abs/2609.32481)
+
+}{cfyb paper: JEPA Learns What the Mask Leaves Unrecoverable (2026) — why block masks work}
+
+{
+
 Linearises JEPA training around the collapsed solution and finds, for each mode, a driving force and a decay effect whose ratio decides whether the mode escapes collapse. Predictor size, masking ratio and EMA become three ways to shift that ratio, confirmed on over 800 configurations.
 
 [Paper](https://arxiv.org/abs/2610.02344)
@@ -976,6 +1049,22 @@ Goes beyond LeJEPA's recovery up to a linear map. Under a condition called Struc
 [Paper](https://arxiv.org/abs/2610.09457)
 
 }{cfyb paper: DSReg (2026) — recovering individual world latents}
+
+{
+
+Earlier theory says JEPA keeps features that are predictable on their own, so an unpredictable traffic light would be dropped. Rewriting the objective shows that selection depends on sets of features: the light is kept when it helps predict whether traffic stops. Controlled experiments confirm this, and show that steering one feature can indirectly strengthen another.
+
+[Paper](https://arxiv.org/abs/2610.27364)
+
+}{cfyb paper: Predictive Closure (2026) — features are selected as sets}
+
+{
+
+Proves that JEPAs trained separately on different modalities learn the same representation up to a rotation, as long as each positive pair is two views of the same scene. It reads next-token prediction as a JEPA with bad views, which would explain why language models align with vision only at scale. Good views need 42× fewer samples for the same alignment, and a 109M text JEPA aligns with DINOv2 and CLIP image encoders better than every language model tested, up to 72B.
+
+[Paper](https://arxiv.org/abs/2610.39302)
+
+}{cfyb paper: Proving and Improving the Platonic Representation Hypothesis with JEPAs (2026) — why different modalities converge}
 
 ## Surveys and tools
 
@@ -1031,11 +1120,12 @@ A reproducible baseline for training streaming video world models from scratch: 
 | --- | --- | --- |
 | Meta FAIR | I-JEPA, V-JEPA, V-JEPA 2 and 2.1, DINOv2 and DINOv3, DINO-world | Joint-embedding |
 | AMI Labs | Founded by Yann LeCun; $1.03B seed in 2026 to build JEPA-based world models | Joint-embedding |
-| Google DeepMind | Genie 1–3, Dreamer 4, MuZero | Generative worlds, model-based RL |
+| Google DeepMind | Genie 1–4, Dreamer 4, MuZero | Generative worlds, model-based RL |
 | NVIDIA | Cosmos, Cosmos-Predict2.5, Cosmos 3 | Generative worlds |
 | OpenAI | Sora | Generative video |
-| World Labs | Marble (2025), editable 3D worlds from text, images or video; Atlas (2026). Agreed in September 2026 to join AMD | Generative 3D worlds |
-| Wayve | GAIA-1, GAIA-2 | Generative, for driving |
+| Runway | GWM-1 (2025): Worlds, Robotics and Avatars | Generative worlds |
+| World Labs | Marble (2025) and Marble 1.1 (2026), editable 3D worlds from text, images or video; Atlas (2026). Agreed in September 2026 to join AMD | Generative 3D worlds |
+| Wayve | GAIA-1, GAIA-2, GAIA-3 | Generative, for driving |
 | Waymo | Waymo World Model, built on Genie 3 | Generative, for driving |
 
 ## Where to start

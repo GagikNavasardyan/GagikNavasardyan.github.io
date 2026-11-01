@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AnisoWM: Anisotropic Representations Improve Planning in JEPA World Models · Gagik Navasardyan</title>
+  <meta name="description" content="An isotropic Gaussian latent space can rank a planner&#x27;s options differently from the task, even with a perfect predictor. ΛReg keeps SIGReg but learns how much variance each latent direction gets.">
+  <meta name="theme-color" content="#FFFFFF">
+  <link rel="canonical" href="https://gagiknavasardyan.github.io/writing/anisowm/">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="AnisoWM: Anisotropic Representations Improve Planning in JEPA World Models">
+  <meta property="og:description" content="An isotropic Gaussian latent space can rank a planner&#x27;s options differently from the task, even with a perfect predictor. ΛReg keeps SIGReg but learns how much variance each latent direction gets.">
+  <meta property="og:image" content="https://gagiknavasardyan.github.io/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Gagik Navasardyan · MSc in Artificial Intelligence, UB · UPC · URV, Barcelona.">
+  <meta property="og:url" content="https://gagiknavasardyan.github.io/writing/anisowm/">
+  <meta property="article:published_time" content="2026-10-22">
+  <meta property="article:author" content="Gagik Navasardyan">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+  <script src="../../theme.js?v=adc9bed3"></script>
+  <script src="../../transitions.js?v=7a687d03"></script>
+  <link rel="stylesheet" href="../../styles.css?v=84ca58f2">
+  <link rel="stylesheet" href="../../blog.css?v=2b193da7">
+  <script src="../../blog.js?v=58ff9639" defer></script>
+  <script src="../../header.js?v=b237b89f" defer></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}], throwOnError:false});"></script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "AnisoWM: Anisotropic Representations Improve Planning in JEPA World Models",
+    "datePublished": "2026-10-22",
+    "author": { "@type": "Person", "name": "Gagik Navasardyan" },
+    "url": "https://gagiknavasardyan.github.io/writing/anisowm/"
+  }
+  </script>
+</head>
+<body class="blog">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <nav class="nav container" aria-label="Main">
+      <a class="nav-logo" href="../../index.html" aria-label="Back to the portfolio">GN</a>
+      <ul class="nav-menu" id="nav-menu">
+        <li><a class="nav-writing active" href="../../writing/"><span class="nav-writing-dot" aria-hidden="true"></span>Blog</a></li>
+      </ul>
+      <div class="nav-actions">
+          <button class="theme-toggle" type="button" aria-pressed="false" aria-label="Switch to dark theme" title="Toggle theme">
+            <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+            <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+          </button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main" class="blog-main">
+    <div class="container">
+
+      <div class="window window-post">
+        <div class="window-bar" aria-hidden="true">
+          <span class="term-dot term-dot-r"></span>
+          <span class="term-dot term-dot-y"></span>
+          <span class="term-dot term-dot-g"></span>
+          <span class="window-title">AnisoWM: Anisotropic Representations Improve Planning in JEPA World Models</span>
+        </div>
+        <div class="window-body">
+          
+          <a class="back-link" href="../../writing/">
+            <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+            blog
+          </a>
+
+          
+
+          <article class="post">
+            <header class="post-header">
+              <h1>AnisoWM: Anisotropic Representations Improve Planning in JEPA World Models</h1>
+              <p class="post-byline">
+                <time datetime="2026-09-29">paper · Sep 29, 2026</time>
+                
+                · 18 min read
+                
+              </p>
+            </header>
+
+            <div class="prose">
+<ul class="prose-list"><li>Is a latent space that avoids collapse also a good space to plan in?</li><li>If the predictor is perfect, can a world model still choose the wrong plan?</li><li>Do the latents of a world model really have to be an isotropic Gaussian?</li></ul>
+<p><a href="https://arxiv.org/abs/2609.37441" target="_blank" rel="noopener">Anisotropic Representations Improve Planning in JEPA World Models</a> (Kang, Oh, Kim and Lee, September 2026) studies these questions for world models like <a href="../leworldmodel/">LeWorldModel</a>, which plan by Euclidean distance in a latent space shaped by SIGReg. The paper makes three contributions:</p>
+<ol class="prose-list"><li>A proof, in a linear setting, that accurate prediction and no collapse are not enough: with SIGReg, latent distance can rank plans differently from the task.</li><li>ΛReg, which replaces SIGReg&#x27;s isotropic target with a Gaussian whose variance in each direction is learned, while prediction and planning stay the same.</li><li>AnisoWM, LeWorldModel trained with ΛReg, which plans more successfully than LeWorldModel on all four benchmarks tested.</li></ol>
+<p>In the <a href="../lejepa/">LeJEPA post</a> we asked how the optimal embedding distribution would change if we knew something about the downstream task. Here the task is known (planning by latent distance), and the paper places a simple bet: keep the Gaussian, but let every direction pick its own variance.</p>
+<h2 id="why-an-isotropic-latent-can-mislead-a-planner"><a class="heading-anchor" href="#why-an-isotropic-latent-can-mislead-a-planner" aria-hidden="true">#</a>Why an isotropic latent can mislead a planner</h2>
+<p>LeWorldModel scores a sequence of actions <span class="math-inline">$U$</span> by how close its predicted final latent lands to the goal:</p>
+<div class="math-display">$$J_z(U) = \big\| \hat z_H(U) - z_g \big\|^2$$</div>
+<p>Here <span class="math-inline">$H$</span> is the planning horizon, <span class="math-inline">$\hat z_H(U)$</span> the latent the predictor reaches after applying the actions <span class="math-inline">$U$</span>, and <span class="math-inline">$z_g$</span> the latent of the goal image. The planner only cares about the order this cost puts plans in. So the question is whether that order matches the order of the real task cost, for example the physical distance to the goal.</p>
+<h3 id="a-robot-vacuum-with-a-bent-ruler"><a class="heading-anchor" href="#a-robot-vacuum-with-a-bent-ruler" aria-hidden="true">#</a>A robot vacuum with a bent ruler</h3>
+<p>Take a robot vacuum in a room twice as long as it is wide, drawn below with the long side left to right. In the training videos it wanders everywhere, so its position <span class="math-inline">$x = (x_1, x_2)$</span> spreads twice as much left–right as up–down: a standard deviation of 2 m left–right and 1 m up–down. Its wheels also slip a little, by the same amount in every direction.</p>
+<p>SIGReg asks every latent direction to have the same spread. The simplest encoder that does this divides each coordinate by its spread:</p>
+<div class="math-display">$$z = \Big( \frac{x_1}{2},\ \frac{x_2}{1} \Big)$$</div>
+<p>Here <span class="math-inline">$x_1$</span> is the left–right position and <span class="math-inline">$x_2$</span> the up–down position, in metres. Both latent coordinates now have spread 1, as SIGReg asks. But the ruler of the latent space has changed: a metre left–right is half a unit, while a metre up–down is a full unit.</p>
+<p>Now put the goal far away and give the planner too few steps to get there. It has to stop somewhere short, and it compares two places where it can stop: A, 1.5 m to the left of the goal, and B, 1 m below it.</p>
+<figure>
+  <img src="../../assets/posts/anisowm/vacuum-sigreg.svg" alt="Two panels. Left, the room in metres: a wide rectangle with a goal star, an orange point A 1.5 m to its left and a blue point B 1 m below it. A dashed circle of radius 1 m around the goal passes through B, with A outside it. Right, the latent space after SIGReg: the same room squeezed left–right by 2 into a square. A is now 0.75 units from the goal, inside the dashed circle, while B is still 1 unit away, on it." width="990" height="390" loading="lazy" decoding="async">
+  <figcaption>Dashed circle: as far from the goal as B. A is outside it in the room, but inside in latent space.</figcaption>
+</figure>
+<p>In the room, A is 1.5 m from the goal and B is 1 m, so B is closer. In the latent space, A&#x27;s 1.5 m left–right shrinks to <span class="math-inline">$1.5 / 2 = 0.75$</span> units, while B&#x27;s 1 m up–down stays 1 unit, so A looks closer. (<span class="math-inline">$J_z$</span> squares the distance, which does not change which one is closer.)</p>
+<div class="table-wrap"><table><thead><tr><th>Distance to the goal</th><th>A (1.5 m left)</th><th>B (1 m below)</th><th>Closer</th></tr></thead><tbody><tr><td>Real, in metres</td><td>1.5</td><td>1</td><td>B</td></tr><tr><td>Latent, after SIGReg</td><td>0.75</td><td>1</td><td>A</td></tr></tbody></table></div>
+<p>The task wants B, but the planner picks A. The predictor is not to blame: it can know exactly where each plan ends. The latent space measures distance with a different ruler than the task.</p>
+<p>Measuring every direction in units of its own spread is a sensible rule for some uses: it says how unusual a miss is. It is not the rule of a task that counts metres. When the goal can be reached exactly, the two rules agree, since both are zero at the goal. They disagree on near misses, which is where the planner ends up when the goal is out of reach.</p>
+<h3 id="from-the-vacuum-to-any-world"><a class="heading-anchor" href="#from-the-vacuum-to-any-world" aria-hidden="true">#</a>From the vacuum to any world</h3>
+<p>The vacuum was chosen so that its spreads line up with the walls. In a real world model the state has many coordinates, and the directions in which it varies a lot can be any mix of them: a robot arm whose shoulder and elbow tend to move together, for example. To describe the spread in every direction at once, we use the covariance <span class="math-inline">$\Sigma$</span> of the training states. For the vacuum it holds the two variances and nothing else:</p>
+<div class="math-display">$$\Sigma = \begin{pmatrix} 2^2 &amp; 0 \\ 0 &amp; 1^2 \end{pmatrix}$$</div>
+<p>Here the diagonal entries are the variances left–right and up–down, and the zeros say the two coordinates vary independently. In a general world the off-diagonal entries are not zero, and they record which coordinates move together.</p>
+<p>Now look at the vacuum&#x27;s squared latent distance from a point <span class="math-inline">$x$</span> to the goal <span class="math-inline">$x_g$</span>. Each error is divided by its spread before squaring, so it is divided by its variance after squaring:</p>
+<div class="math-display">$$\Big(\frac{\Delta x_1}{2}\Big)^2 + \Big(\frac{\Delta x_2}{1}\Big)^2
+= \frac{\Delta x_1^2}{4} + \frac{\Delta x_2^2}{1}
+= \Delta x^\top \Sigma^{-1} \Delta x$$</div>
+<p>Here <span class="math-inline">$\Delta x = x - x_g$</span> is the error vector, with values <span class="math-inline">$\Delta x_1$</span> left–right and <span class="math-inline">$\Delta x_2$</span> up–down, and <span class="math-inline">$\Sigma^{-1}$</span> is the inverse of <span class="math-inline">$\Sigma$</span>, which for the vacuum is just <span class="math-inline">$\mathrm{diag}(1/4, 1)$</span>: one over each variance. In words: the latent space measures every error in units of how much the state varies in that direction, so errors count less in directions that varied more. This holds for any linear encoder whose latents are isotropic:</p>
+<div class="cfyb-block cfyb-row cfyb-card" data-label="Lemma 1 (explained) — isotropic latents weight errors by inverse covariance"><div class="cfyb-block-body">
+<p>A linear encoder <span class="math-inline">$z = Ax$</span> turns an error <span class="math-inline">$\Delta x = x - x_g$</span> into the latent cost</p>
+<div class="math-display">$$\|A\,\Delta x\|^2 = \Delta x^\top M\, \Delta x, \qquad M = A^\top A$$</div>
+<p>Here <span class="math-inline">$A$</span> is the encoder&#x27;s matrix and <span class="math-inline">$M$</span> the metric it induces on states. Let <span class="math-inline">$A$</span> be invertible and <span class="math-inline">$\Sigma$</span> the state covariance (the real-world spread of the training states in every direction). If the encoded covariance is isotropic <span class="math-inline">$\Leftrightarrow A \Sigma A^\top = sI$</span> for some <span class="math-inline">$s &gt; 0$</span>, then <span class="math-inline">$M = s\,\Sigma^{-1}$</span>:</p>
+<div class="math-display">$$\begin{aligned}
+A \Sigma A^\top &amp;= sI \\
+\Sigma &amp;= s\, A^{-1} (A^\top)^{-1} = s\, (A^\top A)^{-1} \\
+\Sigma^{-1} &amp;= \tfrac{1}{s}\, A^\top A \\
+M = A^\top A &amp;= s\, \Sigma^{-1}
+\end{aligned}$$</div>
+<p>Putting <span class="math-inline">$M$</span> back into the latent cost gives:</p>
+<div class="math-display">$$\|A(x - x_g)\|^2 = (x - x_g)^\top M\, (x - x_g) = s\,(x - x_g)^\top \Sigma^{-1} (x - x_g)$$</div>
+<p>Consequently, the latent cost ranks plans like the task only if the task also weighs each direction by one over its variance. The vacuum&#x27;s task weighs every direction the same, so the two rankings can differ, as they do for A and B.</p>
+</div></div>
+<p>So far we assumed the latents are exactly isotropic. A trained world model is not built that way: SIGReg only pushes the latents towards isotropy, while the prediction loss shapes them too. So does training actually end up with isotropic latents? In the linear case, Proposition 1 says yes: the trained model ends up with the same squeezed ruler as the vacuum, <span class="math-inline">$\Sigma^{-1}$</span>:</p>
+<div class="cfyb-block cfyb-row cfyb-card" data-label="Proposition 1 (explained) — joint training picks the inverse-covariance metric"><div class="cfyb-block-body">
+<p>Take the simplest world: everything is linear and Gaussian, and every step adds a little random noise of size <span class="math-inline">$\eta$</span>. Train a linear encoder and a linear predictor with prediction loss plus SIGReg, and look at the best possible result of training. It has:</p>
+<ul class="prose-list"><li>No collapse: the encoder keeps all information about the state, even though training is free to collapse.</li><li>Perfect prediction: the predictor is as accurate as the noise allows, and as <span class="math-inline">$\eta$</span> shrinks, the prediction loss goes to zero.</li><li>The squeezed ruler: as <span class="math-inline">$\eta$</span> shrinks, the latent distance to the goal becomes <span class="math-inline">$q\,(x - x_g)^\top \Sigma^{-1} (x - x_g)$</span> for some scale <span class="math-inline">$q &gt; 0$</span>, the same ruler as for isotropic latents.</li></ul>
+<p>So the model is as good as it can be on both losses, and still measures distance like the vacuum&#x27;s latent space.</p>
+</div></div>
+<p>So a well-trained model ends up with the vacuum&#x27;s ruler. How much does this ruler cost the planner? Let <span class="math-inline">$J(U)$</span> be the task cost of a plan <span class="math-inline">$U$</span>: the real distance from where the plan ends to the goal. The regret of a plan is how much worse it is than the best plan:</p>
+<div class="math-display">$$\mathrm{Regret}(U) = J(U) - \min_{U&#x27;} J(U&#x27;)$$</div>
+<p>Here <span class="math-inline">$U$</span> is the plan the latent planner chose, and the minimum runs over all plans <span class="math-inline">$U&#x27;$</span> it could have chosen. The regret is zero when the planner picks the best plan. (The authors square the distance, which changes the size of the regret but not which plan is best.) For the vacuum, the planner picks A, 1.5 m from the goal, while B is 1 m away, so the regret is <span class="math-inline">$1.5 - 1 = 0.5$</span> m. Theorem 1 shows that this gap stays even when prediction becomes perfect:</p>
+<div class="cfyb-block cfyb-row cfyb-card" data-label="Theorem 1 (explained) — perfect prediction, positive regret"><div class="cfyb-block-body">
+<p>For any dimension <span class="math-inline">$D \geq 2$</span>, any finite horizon <span class="math-inline">$H$</span> and any state covariance <span class="math-inline">$\Sigma$</span> that is not a multiple of the identity, there is a linear control problem with bounded actions in which a model trained with prediction loss plus SIGReg plans worse than it should. As the noise <span class="math-inline">$\eta$</span> shrinks, the model predicts better and better, one step ahead and over the whole horizon, but the regret of its plans does not shrink to zero: it settles at a positive value <span class="math-inline">$\Delta_H$</span>.</p>
+<p>The reason: the end points the planner can reach form a ball. The task picks the point of the ball closest to the goal in plain Euclidean distance, while the latent planner picks the closest point under the squeezed ruler <span class="math-inline">$\Sigma^{-1}$</span>. For a goal outside the ball, unless it lies exactly along one of the main directions of <span class="math-inline">$\Sigma$</span>, these two points differ. The vacuum&#x27;s choice between A and B is a small version of this.</p>
+</div></div>
+<p>To check that the same happens with a neural network, the authors train an MLP encoder and a predictor with prediction loss plus SIGReg on a two-dimensional system, much like the vacuum: the actions and the noise are the same in every direction, but the dynamics make the states spread more in some directions than in others. The goals are placed out of reach, so the planner has to choose a near miss. They repeat the training for several noise levels <span class="math-inline">$\eta$</span>, with ten seeds each:</p>
+<figure>
+  <img src="../../assets/posts/anisowm/prediction-planning-gap.png" alt="(a) Planning geometry: a grey disc of reachable outcomes below a starred goal. A dotted circle around the goal is the Euclidean task cost; a tilted red ellipse is the SIGReg latent cost, almost on top of a dashed Sigma-inverse reference ellipse. The task optimum and the SIGReg choice are different points on the edge of the reachable disc, reached in different directions. (b) Prediction-planning separation: as the process-noise scale shrinks from 3e-3 to 1e-4, conditional-mean prediction error falls from about 8e-4 to 1.5e-4, while normalised planning regret stays flat near 0.16, on the dashed Sigma-inverse reference line." width="2877" height="1156" loading="lazy" decoding="async">
+  <figcaption>Prediction–planning separation with a nonlinear encoder. Figure from <a href="https://arxiv.org/abs/2609.37441" target="_blank" rel="noopener">AnisoWM</a> (Kang et al., 2026).</figcaption>
+</figure>
+<p>On the left is one planning problem. The grey disc at the bottom holds every point the system can reach from its start, and the goal (star) lies outside it. The dotted circle is the task&#x27;s ruler: every point on it is equally far from the goal, and the point where the disc touches it first is the task optimum (white circle). The red ellipse is the same picture with the trained model&#x27;s latent distance. It is stretched along the direction where the states vary most, just like the vacuum&#x27;s squeezed room, and it lies almost on the dashed <span class="math-inline">$\Sigma^{-1}$</span> ellipse that the theory predicts. So it touches the disc at another point, the SIGReg choice (red square). This is the vacuum&#x27;s A versus B again: the planner goes in a different direction than the task wants.</p>
+<p>On the right, the noise <span class="math-inline">$\eta$</span> shrinks 30× from left to right. The top plot shows the prediction error falling with it, by about 5×. The bottom plot shows the regret (normalised), which stays flat near 0.16, close to the 0.1607 the <span class="math-inline">$\Sigma^{-1}$</span> ruler predicts. The error bars are 95% confidence intervals over the ten seeds. A better predictor does not fix the choice.</p>
+<p>Since the problem is the ruler and not the predictor, the fix has to change the ruler. To do this, the authors propose ΛReg, which keeps SIGReg&#x27;s Gaussian target but lets training choose how much each direction is squeezed.</p>
+<h2 id="reg-a-gaussian-with-learned-variances"><a class="heading-anchor" href="#reg-a-gaussian-with-learned-variances" aria-hidden="true">#</a>ΛReg: a Gaussian with learned variances</h2>
+<p>AnisoWM replaces SIGReg&#x27;s target <span class="math-inline">$\mathcal{N}(0, I)$</span> with <span class="math-inline">$\mathcal{N}(0, \Lambda)$</span>, where <span class="math-inline">$\Lambda$</span> is a learned diagonal covariance with two constraints:</p>
+<div class="math-display">$$\Lambda = \mathrm{diag}(v_1, \dots, v_D), \qquad \mathrm{tr}\,\Lambda = D, \qquad \frac{\max_i v_i}{\min_i v_i} \leq \kappa$$</div>
+<p>Here <span class="math-inline">$D$</span> is the latent dimension, <span class="math-inline">$v_i$</span> the target variance of coordinate <span class="math-inline">$i$</span>, and <span class="math-inline">$\kappa$</span> the largest allowed ratio between two target variances. The trace keeps the total variance the same as SIGReg&#x27;s, and <span class="math-inline">$\kappa = 1$</span> gives back the isotropic target.</p>
+<p>The regulariser itself is a one-line change. Divide every coordinate by its target standard deviation, and run plain SIGReg on the result:</p>
+<div class="math-display">$$\Lambda\mathrm{Reg}(Z) = \mathrm{SIGReg}\big(\Lambda^{-1/2} Z\big)$$</div>
+<p>Here <span class="math-inline">$Z$</span> is a batch of latents. If <span class="math-inline">$z \sim \mathcal{N}(0, \Lambda)$</span>, then <span class="math-inline">$\Lambda^{-1/2} z \sim \mathcal{N}(0, I)$</span>, so SIGReg&#x27;s test against a standard normal can be reused unchanged. The division happens only inside the regulariser: the predictor and the planner see the original latents.</p>
+<p>The training loss is LeWorldModel&#x27;s, with SIGReg swapped for ΛReg:</p>
+<div class="math-display">$$\mathcal{L} = \mathcal{L}_{\text{pred}} + \lambda \cdot \Lambda\mathrm{Reg}(Z)$$</div>
+<p>Here <span class="math-inline">$\mathcal{L}_{\text{pred}}$</span> is the next-latent prediction loss and <span class="math-inline">$\lambda$</span> the weight of the regulariser. Planning does not change at all: it is still the Euclidean cost <span class="math-inline">$J_z$</span> from above. What changes is that ΛReg, unlike SIGReg, has trainable parameters: the <span class="math-inline">$D$</span> target variances <span class="math-inline">$v_1, \dots, v_D$</span>. To better understand all the steps, you can look at the code below.</p>
+<div class="cfyb-block cfyb-row cfyb-card cfyb-code" data-label="Code — ΛReg, adapted from Algorithm 1"><div class="cfyb-block-body">
+<p>The variances are stored as <span class="math-inline">$D$</span> logits <span class="math-inline">$\alpha_i$</span>, with <span class="math-inline">$v_i = D\,\mathrm{softmax}(\alpha)_i$</span>, so they always sum to <span class="math-inline">$D$</span>. The logits start at zero, so training starts from SIGReg&#x27;s isotropic target, and after every optimization step they are clipped to <span class="math-inline">$[-\tfrac{1}{2}\log\kappa, \tfrac{1}{2}\log\kappa]$</span>, which keeps the ratio between any two variances at most <span class="math-inline">$\kappa$</span>.</p>
+<blockquote><p><em>Note: the code is adapted from the paper&#x27;s Algorithm 1 (Appendix F.1). The SIGReg part is replaced by a call, to make the ΛReg part easy to read, and the clipping is added, which the paper describes only in the text.</em></p></blockquote>
+<div class="code-block" data-lang="python"><pre><code><span class="k">def</span><span class="w"> </span><span class="nf">LambdaReg</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">global_step</span><span class="p">,</span> <span class="n">num_slices</span><span class="o">=</span><span class="mi">1024</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""x is (N, D); alpha is a learnable vector of size D."""</span>
+
+    <span class="c1"># --- learned diagonal Gaussian target ---</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">D</span> <span class="o">*</span> <span class="n">alpha</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>   <span class="c1"># sum(v) = D</span>
+
+    <span class="c1"># standardize only inside LambdaReg</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">v</span><span class="o">.</span><span class="n">rsqrt</span><span class="p">()</span>
+
+    <span class="c1"># --- original SIGReg statistic ---</span>
+    <span class="k">return</span> <span class="n">SIGReg</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">global_step</span><span class="p">,</span> <span class="n">num_slices</span><span class="p">)</span>
+
+
+<span class="c1"># after every optimizer step: keeps max(v) / min(v) &lt;= kappa</span>
+<span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+    <span class="n">alpha</span><span class="o">.</span><span class="n">clamp_</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">kappa</span><span class="p">),</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">kappa</span><span class="p">))</span>
+</code></pre></div>
+</div></div>
+<p>So during training, ΛReg gives us the freedom to pick a variance for each direction, enabling the system itself to decide how to spread them. Moreover, it can still learn the isotropic Gaussian if needed: we do not lose the isotropic target, we just give the system more room to choose. To analyse which directions the system picks, and why, the authors study the linear case in their Proposition 2:</p>
+<div class="cfyb-block cfyb-row cfyb-card" data-label="Proposition 2 (explained) — prediction chooses the allocation"><div class="cfyb-block-body">
+<p>Take the same linear Gaussian world as in Proposition 1, but train with ΛReg instead of SIGReg, with a bound <span class="math-inline">$\kappa &gt; 1$</span>. As the noise <span class="math-inline">$\eta$</span> shrinks, the best possible result of training still has no collapse and perfect prediction, as before. What changes is the ruler. The latent distance to the goal becomes:</p>
+<div class="math-display">$$q\,(x - x_g)^\top \Sigma^{-1/2} L\, \Sigma^{-1/2} (x - x_g)$$</div>
+<p>Here <span class="math-inline">$L$</span> is the learned target covariance, seen in state coordinates rescaled to unit spread; its variances still sum to <span class="math-inline">$D$</span> and differ by at most a factor <span class="math-inline">$\kappa$</span>. With <span class="math-inline">$L = I$</span> this is SIGReg&#x27;s ruler <span class="math-inline">$\Sigma^{-1}$</span>. Training picks the <span class="math-inline">$L$</span> that minimises:</p>
+<div class="math-display">$$\mathrm{tr}(LR), \qquad R = \Sigma^{-1/2}\, W\, \Sigma^{-1/2}$$</div>
+<p>Here <span class="math-inline">$W$</span> is the covariance of the noise, so <span class="math-inline">$R$</span> is the noise measured in units of the state&#x27;s own spread. Minimising <span class="math-inline">$\mathrm{tr}(LR)$</span> puts more variance where the noise is small compared to how much the state moves: the directions that are easiest to predict.</p>
+<p>For a task that weighs every direction the same, the ideal is <span class="math-inline">$L$</span> proportional to <span class="math-inline">$\Sigma$</span>, which cancels <span class="math-inline">$\Sigma^{-1}$</span> and gives back the task&#x27;s ruler. In the simplest case, where the noise is the same in every direction and <span class="math-inline">$\Sigma$</span> has only two different variances, training picks exactly this <span class="math-inline">$L$</span> when <span class="math-inline">$\kappa$</span> equals the ratio of the two variances, and the regret goes to zero. A larger <span class="math-inline">$\kappa$</span> overshoots: the regret grows again, and with enough anisotropy it becomes worse than with SIGReg.</p>
+</div></div>
+<p>Back to the vacuum, whose wheels slip a little, by the same amount in every direction. ΛReg has a fixed budget: two target variances <span class="math-inline">$l_1$</span> (left–right) and <span class="math-inline">$l_2$</span> (up–down) that sum to 2 and differ by at most a factor <span class="math-inline">$\kappa$</span>. Every bit of variance given to a direction also stretches the slip in it, which no predictor can foresee, so the prediction loss pays for it. The slip is the same both ways, but the vacuum moves four times more left–right (in variance), so in units of its spread the slip left–right is four times smaller. The price of the budget is:</p>
+<div class="math-display">$$\mathrm{tr}(LR) \propto \frac{l_1}{4} + l_2$$</div>
+<p>Variance left–right is four times cheaper, so training gives it as much as the bound allows. With <span class="math-inline">$\kappa = 2$</span> this is <span class="math-inline">$l_1 = 4/3$</span> and <span class="math-inline">$l_2 = 2/3$</span>, and a metre left–right becomes <span class="math-inline">$\sqrt{l_1}/2 \approx 0.58$</span> units, while a metre up–down becomes <span class="math-inline">$\sqrt{l_2} \approx 0.82$</span> units. The squeeze is now much milder than SIGReg&#x27;s 0.5 versus 1. With <span class="math-inline">$\kappa = 4$</span>, the ratio of the two variances, both become <span class="math-inline">$\approx 0.63$</span> units: the task&#x27;s own ruler up to scale:</p>
+<div class="table-wrap"><table><thead><tr><th>Distance to the goal</th><th>A (1.5 m left)</th><th>B (1 m below)</th><th>Closer</th></tr></thead><tbody><tr><td>Real, in metres</td><td>1.5</td><td>1</td><td>B</td></tr><tr><td>Latent, after SIGReg</td><td>0.75</td><td>1</td><td>A</td></tr><tr><td>Latent, after ΛReg with <span class="math-inline">$\kappa = 2$</span></td><td>0.87</td><td>0.82</td><td>B</td></tr><tr><td>Latent, after ΛReg with <span class="math-inline">$\kappa = 4$</span></td><td>0.95</td><td>0.63</td><td>B</td></tr></tbody></table></div>
+<p>Training never saw the goal or the task cost. It only saw that the vacuum moves more left–right than up–down, while slipping equally in both. That this leads to the task&#x27;s ruler rests on two facts of the example: the slip is the same in every direction, and the task counts metres.</p>
+<p>Putting it together, the bound <span class="math-inline">$\kappa$</span> limits how unequal the variances can become, and the prediction loss decides which directions get the larger ones. With <span class="math-inline">$\kappa = 1$</span> we are back to SIGReg. A larger <span class="math-inline">$\kappa$</span> gives the system more freedom, but not always a better planner, as the experiments below also show.</p>
+<h2 id="results"><a class="heading-anchor" href="#results" aria-hidden="true">#</a>Results</h2>
+<p>AnisoWM is tested on the four environments of LeWorldModel (TwoRoom, Reacher, PushT and OGBench Cube), with its data, architecture (192-dimensional latents) and planning protocol, and the same regulariser weight <span class="math-inline">$\lambda = 0.09$</span>. One bound, <span class="math-inline">$\kappa = 2$</span>, is used everywhere, so no target variance can be more than twice another. The LeWorldModel baseline is retrained in the same pipeline with the released code (<span class="math-inline">$\kappa = 1 \Leftrightarrow \mathrm{SIGReg}$</span>). Each model is trained with three seeds and evaluated on 50 start and goal pairs per environment, with a budget of 50 steps.</p>
+<figure>
+  <img src="../../assets/posts/anisowm/success.png" alt="Four bar charts of planning success rate. Two-Room: AnisoWM 93, LeWM 87, PLDM 100, DINO-WM 97, GCBC 100, GCIQL 100, GCIVL 100, random 0. Reacher: AnisoWM 89, LeWM 86, PLDM 78, DINO-WM 79, random 10. Push-T: AnisoWM 97, LeWM 96, DINO-WM with proprioception 92, PLDM 78, DINO-WM 74, GCBC 75, GCIQL 20, GCIVL 33, random 2. OGBench-Cube: AnisoWM 79, LeWM 74, PLDM 65, DINO-WM 86, GCBC 84, GCIQL 64, GCIVL 56, random 48." width="2355" height="729" loading="lazy" decoding="async">
+  <figcaption>Planning success across environments. Figure from <a href="https://arxiv.org/abs/2609.37441" target="_blank" rel="noopener">AnisoWM</a> (Kang et al., 2026).</figcaption>
+</figure>
+<p>AnisoWM plans better than LeWorldModel in all four environments. The predictor and the planner are the same, so the gain comes from changing the regulariser&#x27;s target. While AnisoWM improves the numbers over LeWorldModel, it still struggles to beat all the other models, as in TwoRoom and Cube.</p>
+<h3 id="does-the-latent-cost-order-plans-like-the-task-does"><a class="heading-anchor" href="#does-the-latent-cost-order-plans-like-the-task-does" aria-hidden="true">#</a>Does the latent cost order plans like the task does?</h3>
+<p>The theory says the latent ruler can put plans in the wrong order, like A before B for the vacuum. So the authors test the order directly. For each start and goal, they take at least eight recorded action sequences from earlier runs, each with the place it really ended, and measure how far that is from the goal. Then they compare the sequences two at a time. Say one sequence really ended 1 m from the goal and another 2 m away: the latent cost gets the pair right if it also gives the first one the lower cost. The score is the fraction of pairs it gets right.</p>
+<p>Each sequence <span class="math-inline">$U$</span> is scored with two latent costs:</p>
+<div class="math-display">$$J_{\text{enc}}(U) = \big\| f(o_H(U)) - z_g \big\|^2, \qquad
+J_{\text{pred}}(U) = \big\| \hat z_H(U) - z_g \big\|^2$$</div>
+<p>Here <span class="math-inline">$f$</span> is the encoder, <span class="math-inline">$o_H(U)$</span> the frame the sequence really ended in, <span class="math-inline">$\hat z_H(U)$</span> the predictor&#x27;s guess of the final latent, and <span class="math-inline">$z_g$</span> the latent of the goal. <span class="math-inline">$J_{\text{enc}}$</span> involves no predictor, so it tests the latent space alone. <span class="math-inline">$J_{\text{pred}}$</span> is the cost the planner actually uses.</p>
+<div class="table-wrap"><table><thead><tr><th>Environment</th><th><span class="math-inline">$J_{\text{enc}}$</span> LeWM</th><th><span class="math-inline">$J_{\text{enc}}$</span> AnisoWM</th><th><span class="math-inline">$J_{\text{pred}}$</span> LeWM</th><th><span class="math-inline">$J_{\text{pred}}$</span> AnisoWM</th></tr></thead><tbody><tr><td>TwoRoom</td><td>0.564</td><td>0.661</td><td>0.575</td><td>0.646</td></tr><tr><td>Reacher</td><td>0.790</td><td>0.893</td><td>0.676</td><td>0.723</td></tr><tr><td>PushT</td><td>0.647</td><td>0.641</td><td>0.594</td><td>0.621</td></tr><tr><td>Cube</td><td>0.555</td><td>0.576</td><td>0.537</td><td>0.553</td></tr></tbody></table></div>
+<p>With the cost the planner uses, <span class="math-inline">$J_{\text{pred}}$</span>, AnisoWM orders plans better in all four environments. With the latent space alone, <span class="math-inline">$J_{\text{enc}}$</span>, it is clearly better in TwoRoom and Reacher (about +0.1), slightly better in Cube, and no better in PushT, where the gain appears only once the predictor is involved.</p>
+<h3 id="what-does-close-to-the-goal-look-like"><a class="heading-anchor" href="#what-does-close-to-the-goal-look-like" aria-hidden="true">#</a>What does &quot;close to the goal&quot; look like?</h3>
+<p>The authors also map which positions fall in the lowest 10% of latent cost around a goal, and compare them with a circle of the same physical distance:</p>
+<figure>
+  <img src="../../assets/posts/anisowm/cost-neighbourhoods.png" alt="Cube and PushT scenes, each with a zoomed panel around a starred goal. A dashed circle marks the physical-distance neighbourhood. In Cube, the AnisoWM low-cost region (red) fills the circle, while the LeWM region (blue) is a thin vertical strip reaching far above and below it; Spearman rho goes from 0.15 to 0.91. In PushT, the AnisoWM region again sits on the circle, while the LeWM region spreads down and to the right; rho goes from 0.65 to 0.92." width="1666" height="533" loading="lazy" decoding="async">
+  <figcaption>Latent cost neighbourhoods around the goal. Figure from <a href="https://arxiv.org/abs/2609.37441" target="_blank" rel="noopener">AnisoWM</a> (Kang et al., 2026).</figcaption>
+</figure>
+<p>For LeWorldModel (blue), the region it considers close to the goal stretches far outside the circle: in Cube it is a long thin strip. For AnisoWM (red), it sits on the circle. The Spearman rank correlation <span class="math-inline">$\rho$</span> between latent cost and physical distance goes from 0.15 to 0.91 in Cube and from 0.65 to 0.92 in PushT, for these two examples.</p>
+<h3 id="what-target-does-it-learn"><a class="heading-anchor" href="#what-target-does-it-learn" aria-hidden="true">#</a>What target does it learn?</h3>
+<figure>
+  <img src="../../assets/posts/anisowm/target-spectra.png" alt="Left: learned target variances at kappa 2, sorted from largest to smallest, for four environments, against a dashed isotropic line at 1. Each curve is a step from about 1.2 to 1.33 down to about 0.6 to 0.67; the number of coordinates above the mean is 102 for TwoRoom, 124 for Reacher, 95 for PushT and 97 for Cube. Right: the TwoRoom target spectrum over 15 epochs, starting nearly flat at 1 and sharpening into a step, still moving after it reaches the bound." width="1722" height="476" loading="lazy" decoding="async">
+  <figcaption>Learned target spectra. Figure from <a href="https://arxiv.org/abs/2609.37441" target="_blank" rel="noopener">AnisoWM</a> (Kang et al., 2026).</figcaption>
+</figure>
+<p>With the same bound <span class="math-inline">$\kappa = 2$</span>, each environment learns its own target: the number of coordinates above the mean variance goes from 95 in PushT to 124 in Reacher. In TwoRoom the target starts flat, turns into a step, and keeps changing after reaching the bound, so <span class="math-inline">$\kappa$</span> limits the target without fixing it.</p>
+<p>More anisotropy is not always better. With single training runs at other bounds, success changes like this:</p>
+<figure>
+  <img src="../../assets/posts/anisowm/kappa-sweep.svg" alt="Four small line plots of planning success rate against the anisotropy bound kappa (1, 1.25, 2, 4, 8, 16) for Two-Room, Reacher, Push-T and OGBench-Cube. A red square at kappa 1 marks the isotropic LeWM baseline. Two-Room rises from 87 to 94 at kappa 16. Reacher peaks at 90 for kappa 1.25 and 2, then drops to 84. Push-T peaks at 98 at kappa 2 and drops to 92. Cube peaks at 82 at kappa 1.25 and stays at 78 from kappa 2 on." width="653" height="123" loading="lazy" decoding="async">
+  <figcaption>Success across anisotropy bounds; κ = 1 is LeWorldModel. Figure from <a href="https://arxiv.org/abs/2609.37441" target="_blank" rel="noopener">AnisoWM</a> (Kang et al., 2026).</figcaption>
+</figure>
+<p>TwoRoom keeps improving up to <span class="math-inline">$\kappa = 16$</span>, while the other three do best at a small bound. The authors treat this as a sensitivity check, not a tuned result, since each entry is one run.</p>
+<div class="cfyb-block" data-label="My thoughts"><div class="cfyb-block-body">
+<p>I found this work quite impressive, and I think it opens a new front of research: the design of the target, whether a distribution or a more general rule on the shape of the latent space. I expect to see more alternatives to SIGReg. SIGReg has theory behind it, yet the theorems that argue for the isotropic Gaussian either rely on strong assumptions or are proven in the linear case, with a few rare nonlinear exceptions, and in practice we hardly use such models. The theorems and propositions here are also built on the linear case, with only a toy MLP check beyond it.</p>
+<p>What I would like to see instead are target distributions with more freedom to take a shape, while still preventing collapse. Something like a mixture of Gaussians or a mixture density network could work, and it could still be checked with the same random projections, since every one-dimensional projection of a mixture of Gaussians is again a mixture of Gaussians. A clever way of avoiding collapse may then be needed, though.</p>
+<p>I would also like to see more empirical tests and careful analysis of these models, to understand better how they work and where their limits are. Instead of theorems that hold only under narrow assumptions, I would prefer either more empirical results or one strong theorem.</p>
+</div></div>
+<h2 id="summary"><a class="heading-anchor" href="#summary" aria-hidden="true">#</a>Summary</h2>
+<p>AnisoWM changes one thing in LeWorldModel, the target of the regulariser:</p>
+<div class="summary-grid">
+  <div class="summary-card">
+    <span class="summary-num">1</span>
+    <span class="summary-eyebrow">The problem</span>
+    <span class="summary-title">Isotropic latents, misordered plans</span>
+    <span class="summary-text">With SIGReg, latent distance weights errors by inverse state covariance, so a planner can prefer the misleading plan even with a perfect predictor.</span>
+  </div>
+  <div class="summary-card">
+    <span class="summary-num">2</span>
+    <span class="summary-eyebrow">The fix</span>
+    <span class="summary-title">ΛReg</span>
+    <span class="summary-text">A Gaussian target with a learned variance per direction, fixed total variance and a bound κ on the ratio. SIGReg runs on the standardised latents.</span>
+  </div>
+  <div class="summary-card">
+    <span class="summary-num">3</span>
+    <span class="summary-eyebrow">What stays</span>
+    <span class="summary-title">Same predictor, same planner</span>
+    <span class="summary-text">Planning is still Euclidean distance in latent space.</span>
+  </div>
+  <div class="summary-card">
+    <span class="summary-num">4</span>
+    <span class="summary-eyebrow">What it gives</span>
+    <span class="summary-title">Better plans in all four tasks</span>
+    <span class="summary-text">Higher success than LeWorldModel in TwoRoom, Reacher, PushT and Cube, and latent costs that order plans more like the task.</span>
+  </div>
+</div>
+            </div>
+          </article>
+
+          <footer class="post-footer">
+            <p>
+              Written by Gagik Navasardyan.
+              <a href="mailto:gagiknavasard@gmail.com">Send a reply</a>.
+            </p>
+            <a class="back-link" href="../../writing/">
+              <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+              all posts
+            </a>
+          </footer>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2026 Gagik Navasardyan</p>
+    </div>
+  </footer>
+</body>
+</html>

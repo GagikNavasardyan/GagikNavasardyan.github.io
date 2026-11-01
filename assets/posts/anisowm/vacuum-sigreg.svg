@@ -1,0 +1,31 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 990 390' width='990' height='390'>
+<rect width='100%' height='100%' fill='white'/>
+<text x='310.0' y='36' text-anchor='middle' font-size='19' font-weight='600' font-family='Helvetica, Arial, sans-serif' fill='#111'>The room</text>
+<text x='310.0' y='58' text-anchor='middle' font-size='14' font-family='Helvetica, Arial, sans-serif' fill='#555'>in metres</text>
+<rect x='30' y='70' width='560.0' height='280' fill='#f6f4ef' stroke='#444' stroke-width='3' rx='6'/>
+<circle cx='380.0' cy='168.0' r='70' fill='none' stroke='#888' stroke-width='1.5' stroke-dasharray='5 5'/>
+<line x1='275.0' y1='168.0' x2='380.0' y2='168.0' stroke='#d9731a' stroke-width='3'/>
+<text x='343.25' y='158.0' text-anchor='middle' font-size='16' font-weight='600' font-family='Helvetica, Arial, sans-serif' fill='#d9731a'>1.5 m</text>
+<text x='275.0' y='150.0' text-anchor='middle' font-size='18' font-weight='700' font-family='Helvetica, Arial, sans-serif' fill='#d9731a'>A</text>
+<circle cx='275.0' cy='168.0' r='11' fill='#d9731a' stroke='white' stroke-width='2'/>
+<line x1='380.0' y1='238.0' x2='380.0' y2='168.0' stroke='#2f6fb5' stroke-width='3'/>
+<text x='390.0' y='208.0' text-anchor='start' font-size='16' font-weight='600' font-family='Helvetica, Arial, sans-serif' fill='#2f6fb5'>1 m</text>
+<text x='380.0' y='270.0' text-anchor='middle' font-size='18' font-weight='700' font-family='Helvetica, Arial, sans-serif' fill='#2f6fb5'>B</text>
+<circle cx='380.0' cy='238.0' r='11' fill='#2f6fb5' stroke='white' stroke-width='2'/>
+<polygon points='380.0,157.0 382.9,164.0 390.5,164.6 384.7,169.5 386.5,176.9 380.0,172.9 373.5,176.9 375.3,169.5 369.5,164.6 377.1,164.0' fill='#222'/>
+<text x='394.0' y='156.0' font-size='15' font-family='Helvetica, Arial, sans-serif' fill='#222'>goal</text>
+<text x='820.0' y='36' text-anchor='middle' font-size='19' font-weight='600' font-family='Helvetica, Arial, sans-serif' fill='#111'>The latent space after SIGReg</text>
+<text x='820.0' y='58' text-anchor='middle' font-size='14' font-family='Helvetica, Arial, sans-serif' fill='#555'>left–right divided by 2</text>
+<rect x='680' y='70' width='280.0' height='280' fill='#f6f4ef' stroke='#444' stroke-width='3' rx='6'/>
+<circle cx='855.0' cy='168.0' r='70' fill='none' stroke='#888' stroke-width='1.5' stroke-dasharray='5 5'/>
+<line x1='802.5' y1='168.0' x2='855.0' y2='168.0' stroke='#d9731a' stroke-width='3'/>
+<text x='836.625' y='158.0' text-anchor='middle' font-size='16' font-weight='600' font-family='Helvetica, Arial, sans-serif' fill='#d9731a'>0.75</text>
+<text x='802.5' y='150.0' text-anchor='middle' font-size='18' font-weight='700' font-family='Helvetica, Arial, sans-serif' fill='#d9731a'>A</text>
+<circle cx='802.5' cy='168.0' r='11' fill='#d9731a' stroke='white' stroke-width='2'/>
+<line x1='855.0' y1='238.0' x2='855.0' y2='168.0' stroke='#2f6fb5' stroke-width='3'/>
+<text x='865.0' y='208.0' text-anchor='start' font-size='16' font-weight='600' font-family='Helvetica, Arial, sans-serif' fill='#2f6fb5'>1</text>
+<text x='855.0' y='270.0' text-anchor='middle' font-size='18' font-weight='700' font-family='Helvetica, Arial, sans-serif' fill='#2f6fb5'>B</text>
+<circle cx='855.0' cy='238.0' r='11' fill='#2f6fb5' stroke='white' stroke-width='2'/>
+<polygon points='855.0,157.0 857.9,164.0 865.5,164.6 859.7,169.5 861.5,176.9 855.0,172.9 848.5,176.9 850.3,169.5 844.5,164.6 852.1,164.0' fill='#222'/>
+<text x='869.0' y='156.0' font-size='15' font-family='Helvetica, Arial, sans-serif' fill='#222'>goal</text>
+</svg>
